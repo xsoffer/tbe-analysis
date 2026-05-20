@@ -111,38 +111,49 @@
             font-size: 12px;
             color: #5a6075;
         }
+        /* টিপস সেকশন */
+        .tips {
+            text-align: center;
+            padding: 0 20px 20px 20px;
+            color: #6a7080;
+            font-size: 12px;
+        }
+        .tips a {
+            color: #C9A84C;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h1>⚡ TBE ট্রেডিং সিস্টেম</h1>
-        <p>আপনার পছন্দের ভার্সন নির্বাচন করুন</p>
+        <p>ভার্সন সিলেক্ট করুন (নতুন ট্যাবে ওপেন হবে)</p>
     </div>
 
     <div class="version-grid">
-        <div class="version-card" onclick="loadVersion('tbe17')">
+        <div class="version-card" onclick="openInNewTab('tbe17')">
             <div class="version-icon">📘</div>
             <div class="version-number">TBE 17</div>
             <div class="version-desc">স্টেবল রিলিজ • বেসিক কোর</div>
             <div class="load-btn">লোড করুন →</div>
         </div>
 
-        <div class="version-card" onclick="loadVersion('tbe18')">
+        <div class="version-card" onclick="openInNewTab('tbe18')">
             <div class="version-icon">📙</div>
             <div class="version-number">TBE 18</div>
             <div class="version-desc">আপডেটেড অ্যালগো + VSA</div>
             <div class="load-btn">লোড করুন →</div>
         </div>
 
-        <div class="version-card" onclick="loadVersion('tbe19')">
+        <div class="version-card" onclick="openInNewTab('tbe19')">
             <div class="version-icon">⚙️</div>
             <div class="version-number">TBE 19</div>
             <div class="version-desc">অপটিমাইজড এন্ট্রি রুলস</div>
             <div class="load-btn">লোড করুন →</div>
         </div>
 
-        <div class="version-card" onclick="loadVersion('tbe20')">
+        <div class="version-card" onclick="openInNewTab('tbe20')">
             <div class="version-icon">🏆</div>
             <div class="version-number">TBE 20</div>
             <div class="version-desc">প্রো ভার্সন + ফুল ফিচার</div>
@@ -151,13 +162,18 @@
     </div>
 
     <div class="footer">
-        🔥 মিন্টু ভাই & নাহিদ ট্রেডিং টিম | লেটেস্ট ভার্সন TBE 20
+        © 2025 TBE ট্রেডিং সিস্টেম
+    </div>
+    <div class="tips">
+        💡 টিপ: ভার্সনে ক্লিক করলে নতুন ট্যাবে খুলবে। একই ট্যাবে চাইলে <kbd>Ctrl</kbd> + ক্লিক করুন।
     </div>
 </div>
 
 <script>
-    function loadVersion(version) {
-        window.location.href = version + ".html";
+    function openInNewTab(version) {
+        // নতুন ট্যাবে ওপেন করার ফাংশন
+        const url = version + ".html";
+        window.open(url, '_blank');
     }
 </script>
 </body>
