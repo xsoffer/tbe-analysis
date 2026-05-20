@@ -14,14 +14,11 @@
             background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
             font-family: 'Segoe UI', system-ui, sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
         .container {
-            max-width: 1200px;
-            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
             background: rgba(18, 25, 45, 0.6);
             backdrop-filter: blur(10px);
             border-radius: 32px;
@@ -50,59 +47,50 @@
         }
         .version-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            padding: 32px 28px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            padding: 28px;
         }
         .version-card {
             background: rgba(22, 28, 45, 0.8);
-            border-radius: 24px;
-            padding: 28px 20px;
+            border-radius: 20px;
+            padding: 20px 12px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 1px solid rgba(201, 168, 76, 0.1);
-            backdrop-filter: blur(5px);
         }
         .version-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             border-color: rgba(201, 168, 76, 0.6);
             background: rgba(30, 38, 60, 0.9);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-        .version-icon {
-            font-size: 52px;
-            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         .version-number {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 800;
             background: linear-gradient(135deg, #fff, #C9A84C);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .version-desc {
-            color: #b0b5c5;
-            font-size: 13px;
-            margin-bottom: 20px;
+        .version-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
         }
         .load-btn {
             background: linear-gradient(90deg, #C9A84C, #B8913A);
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 40px;
             font-weight: bold;
             color: #0a0f1e;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             transition: 0.2s;
             display: inline-block;
-        }
-        .load-btn:hover {
-            transform: scale(1.02);
-            background: linear-gradient(90deg, #DAB85E, #C9A13A);
+            margin-top: 10px;
         }
         .footer {
             text-align: center;
@@ -111,16 +99,20 @@
             font-size: 12px;
             color: #5a6075;
         }
-        /* টিপস সেকশন */
         .tips {
             text-align: center;
             padding: 0 20px 20px 20px;
             color: #6a7080;
             font-size: 12px;
         }
-        .tips a {
+        .badge {
+            display: inline-block;
+            background: rgba(201,168,76,0.2);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 10px;
             color: #C9A84C;
-            text-decoration: none;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -131,50 +123,64 @@
         <p>ভার্সন সিলেক্ট করুন (নতুন ট্যাবে ওপেন হবে)</p>
     </div>
 
-    <div class="version-grid">
-        <div class="version-card" onclick="openInNewTab('tbe17')">
-            <div class="version-icon">📘</div>
-            <div class="version-number">TBE 17</div>
-            <div class="version-desc">স্টেবল রিলিজ • বেসিক কোর</div>
-            <div class="load-btn">লোড করুন →</div>
-        </div>
-
-        <div class="version-card" onclick="openInNewTab('tbe18')">
-            <div class="version-icon">📙</div>
-            <div class="version-number">TBE 18</div>
-            <div class="version-desc">আপডেটেড অ্যালগো + VSA</div>
-            <div class="load-btn">লোড করুন →</div>
-        </div>
-
-        <div class="version-card" onclick="openInNewTab('tbe19')">
-            <div class="version-icon">⚙️</div>
-            <div class="version-number">TBE 19</div>
-            <div class="version-desc">অপটিমাইজড এন্ট্রি রুলস</div>
-            <div class="load-btn">লোড করুন →</div>
-        </div>
-
-        <div class="version-card" onclick="openInNewTab('tbe20')">
-            <div class="version-icon">🏆</div>
-            <div class="version-number">TBE 20</div>
-            <div class="version-desc">প্রো ভার্সন + ফুল ফিচার</div>
-            <div class="load-btn">লোড করুন →</div>
-        </div>
+    <div class="version-grid" id="versionGrid">
+        <!-- ভার্সনগুলো জাভাস্ক্রিপ্ট দিয়ে জেনারেট করব -->
     </div>
 
     <div class="footer">
         © 2025 TBE ট্রেডিং সিস্টেম
     </div>
     <div class="tips">
-        💡 টিপ: ভার্সনে ক্লিক করলে নতুন ট্যাবে খুলবে। একই ট্যাবে চাইলে <kbd>Ctrl</kbd> + ক্লিক করুন।
+        💡 টিপ: ভার্সনে ক্লিক করলে নতুন ট্যাবে খুলবে | মোট ২৯টি ভার্সন উপলব্ধ
     </div>
 </div>
 
 <script>
+    // 1 থেকে 29 পর্যন্ত ভার্সন জেনারেট করুন
+    const versions = [];
+    for(let i = 1; i <= 29; i++) {
+        versions.push(i);
+    }
+
+    // আইকন অ্যাসাইনমেন্ট (ভিন্ন ভিন্ন আইকন দিতে)
+    const icons = {
+        base: ['📘', '📙', '📗', '📕', '⚡', '🔥', '🚀', '⭐', '🎯', '💎', '🏆', '🔮', '📊', '💡', '🛠️', '⚙️', '📈', '💰', '🎲', '🔑', '🎓', '🏅', '📌', '📍', '✨', '🌟', '💫', '⚡', '🔥']
+    };
+
+    function generateVersionCards() {
+        const grid = document.getElementById('versionGrid');
+        grid.innerHTML = '';
+        
+        versions.forEach((v, index) => {
+            const card = document.createElement('div');
+            card.className = 'version-card';
+            card.onclick = () => openInNewTab(`tbe${v}`);
+            
+            // আইকন নির্বাচন
+            let icon = icons.base[index % icons.base.length];
+            
+            // বিশেষ ভার্সনের জন্য বিশেষ আইকন
+            if(v === 20) icon = '🏆';
+            if(v === 1) icon = '🌟';
+            if(v === 29) icon = '💎';
+            
+            card.innerHTML = `
+                <div class="version-icon">${icon}</div>
+                <div class="version-number">TBE ${v}</div>
+                <div class="badge">ভার্সন ${v}</div>
+                <div class="load-btn">লোড করুন →</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
     function openInNewTab(version) {
-        // নতুন ট্যাবে ওপেন করার ফাংশন
         const url = version + ".html";
         window.open(url, '_blank');
     }
+
+    // পেজ লোড হলে কার্ড জেনারেট করুন
+    generateVersionCards();
 </script>
 </body>
 </html>
