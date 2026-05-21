@@ -144,6 +144,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 
 <div class="tab-bar">
   <button class="tab active" onclick="switchTab('hist')">📊 ইতিহাস (৪ সপ্তাহ)</button>
+  <button class="tab" onclick="switchTab('histload')">📂 Historical লোড</button>
   <button class="tab" onclick="switchTab('live')">⌨️ লাইভ ইনপুট</button>
 </div>
 
@@ -247,6 +248,80 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div class="ftags-row" id="active-tags"></div>
   </div>
 
+<!-- ========== HISTORICAL LOAD TAB ========== -->
+<div id="tab-histload" class="panel">
+  <div id="hist-load-panel" style="background:var(--bg2);border:1px solid rgba(96,184,255,.25);border-radius:6px;padding:14px 16px;margin-bottom:12px;">
+    <div style="font-size:11px;color:#8DC4F0;font-weight:700;letter-spacing:.4px;margin-bottom:12px;">📂 Historical ডাটা লোড করুন</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">মাস</div>
+        <select class="imp-select" id="ll-month" onchange="updateLiveLoadWeeks()">
+          <option value="">— সিলেক্ট করুন —</option>
+          <option value="Feb">ফেব্রুয়ারি ২০২৬</option>
+          <option value="Mar">মার্চ ২০২৬</option>
+          <option value="Apr">এপ্রিল ২০২৬</option>
+          <option value="May">মে ২০২৬</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">সপ্তাহ</div>
+        <select class="imp-select" id="ll-week" onchange="updateLiveLoadDays()">
+          <option value="">— সিলেক্ট করুন —</option>
+          <option value="W1">সপ্তাহ ১</option>
+          <option value="W2">সপ্তাহ ২</option>
+          <option value="W3">সপ্তাহ ৩</option>
+          <option value="W4">সপ্তাহ ৪</option>
+          <option value="W5">সপ্তাহ ৫</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">দিন</div>
+        <select class="imp-select" id="ll-day">
+          <option value="">— সিলেক্ট করুন —</option>
+          <option value="Mon">সোমবার</option>
+          <option value="Tue">মঙ্গলবার</option>
+          <option value="Wed">বুধবার</option>
+          <option value="Thu">বৃহস্পতিবার</option>
+          <option value="Fri">শুক্রবার</option>
+        </select>
+      </div>
+      <button class="imp-btn" onclick="loadHistoricalToLive()" style="padding:7px 16px;">✅ লোড করুন</button>
+      <button class="imp-btn" onclick="clearLiveLoad()" style="padding:7px 12px;border-color:rgba(255,255,255,.2);background:transparent;color:var(--dim);">↺ Clear</button>
+    </div>
+    <div id="ll-status" style="font-size:11px;margin-top:8px;color:var(--dim);font-family:monospace;"></div>
+    <div class="chart-box" id="hist-load-chart-box" style="margin-top:14px;">
+      <div class="chart-box-title">Historical Load চার্ট — আলাদা ভিউ</div>
+      <div id="hist-draw-toolbar" style="display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 8px;align-items:center;margin-bottom:6px;">
+        <button class="dtool" onclick="copyHistChartImage()" title="Copy Image">🖼 Copy</button>
+        <button class="dtool" onclick="copyHistChartLink()" title="Copy shareable link">🔗 Link</button>
+        <button class="dtool" id="hist-compare-btn" onclick="toggleHistManualCompare()" title="ম্যানুয়াল তুলনা">⚡ ম্যানুয়াল তুলনা</button>
+        <button class="dtool" onclick="toggleHistFullscreen()" title="Full screen" id="hist-fs-btn">⛶ Full</button>
+        <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
+        <span style="font-size:10px;color:var(--dim);margin-right:4px;">✏️</span>
+        <button class="dtool active" data-tool="none" onclick="setTool('none',this)" title="Move / No draw">↖ Move</button>
+        <button class="dtool" data-tool="hline" onclick="setTool('hline',this)" title="Horizontal Line">— H-Line</button>
+        <button class="dtool" data-tool="tline" onclick="setTool('tline',this)" title="Trend Line">╱ Trend</button>
+        <button class="dtool" data-tool="rect" onclick="setTool('rect',this)" title="Rectangle Zone">▭ Zone</button>
+        <button class="dtool" data-tool="fib" onclick="setTool('fib',this)" title="DRT Levels">◫ DRT</button>
+        <button class="dtool" data-tool="text" onclick="setTool('text',this)" title="Text Label">T Label</button>
+        <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
+        <input type="color" id="hist-draw-color" value="#E8C97A" style="width:26px;height:26px;border:none;background:none;cursor:pointer;border-radius:3px;" title="রং">
+        <select id="hist-draw-width" style="background:var(--bg3);border:1px solid var(--border2);color:var(--dim);border-radius:3px;font-size:10px;padding:2px 4px;">
+          <option value="1">পাতলা</option>
+          <option value="2" selected>মধ্যম</option>
+          <option value="3">মোটা</option>
+        </select>
+        <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
+        <button class="dtool" onclick="undoDrawing()" title="Undo">↩ Undo</button>
+        <button class="dtool" onclick="clearDrawings()" title="সব মুছুন" style="color:#F08080;">🗑 Clear</button>
+      </div>
+      <div style="position:relative;height:300px;" id="hist-chart-wrap">
+        <canvas id="histLoadChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Saved live days panel -->
   <div id="saved-days-panel" style="display:none;background:var(--bg2);border:1px solid rgba(61,214,140,.25);border-radius:6px;padding:12px 16px;margin-bottom:12px;">
     <div style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.5px;margin-bottom:10px;">📅 সেভ করা দিনগুলো</div>
@@ -287,74 +362,11 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 
 <!-- ========== LIVE INPUT TAB ========== -->
 <div id="tab-live" class="panel">
-  <!-- Mode switcher -->
-  <div style="display:flex;gap:0;margin-bottom:10px;border-radius:5px;overflow:hidden;border:1px solid var(--border);width:fit-content;">
-    <button id="mode-manual-btn" onclick="setLiveMode('manual')"
-      style="padding:7px 18px;font-size:12px;font-weight:700;background:rgba(201,168,76,.18);color:var(--gold);border:none;cursor:pointer;transition:all .2s;">
-      ✏️ ম্যানুয়াল ইনপুট
-    </button>
-    <button id="mode-load-btn" onclick="setLiveMode('load')"
-      style="padding:7px 18px;font-size:12px;font-weight:700;background:var(--bg3);color:var(--dim);border:none;cursor:pointer;transition:all .2s;">
-      📂 Historical লোড
-    </button>
-  </div>
+  <!-- Manual input only (mode selector removed) -->
 
-  <!-- Historical Load panel -->
-  <div id="live-load-panel" style="display:none;background:var(--bg2);border:1px solid rgba(96,184,255,.25);border-radius:6px;padding:14px 16px;margin-bottom:12px;">
-    <div style="font-size:11px;color:#8DC4F0;font-weight:700;letter-spacing:.4px;margin-bottom:12px;">📂 Historical ডাটা লোড করুন</div>
-    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-      <div>
-        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">মাস</div>
-        <select class="imp-select" id="ll-month" onchange="updateLiveLoadWeeks()">
-          <option value="">— সিলেক্ট করুন —</option>
-          <option value="Feb">ফেব্রুয়ারি ২০২৬</option>
-          <option value="Mar">মার্চ ২০২৬</option>
-          <option value="Apr">এপ্রিল ২০২৬</option>
-          <option value="May">মে ২০২৬</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">সপ্তাহ</div>
-        <select class="imp-select" id="ll-week" onchange="updateLiveLoadDays()">
-          <option value="">— সিলেক্ট করুন —</option>
-          <option value="W1">সপ্তাহ ১</option>
-          <option value="W2">সপ্তাহ ২</option>
-          <option value="W3">সপ্তাহ ৩</option>
-          <option value="W4">সপ্তাহ ৪</option>
-          <option value="W5">সপ্তাহ ৫</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">দিন</div>
-        <select class="imp-select" id="ll-day">
-          <option value="">— সিলেক্ট করুন —</option>
-          <option value="Mon">সোমবার</option>
-          <option value="Tue">মঙ্গলবার</option>
-          <option value="Wed">বুধবার</option>
-          <option value="Thu">বৃহস্পতিবার</option>
-          <option value="Fri">শুক্রবার</option>
-        </select>
-      </div>
-      <button class="imp-btn" onclick="loadHistoricalToLive()" style="padding:7px 16px;">
-        ✅ লোড করুন
-      </button>
-      <button class="imp-btn" onclick="clearLiveLoad()" style="padding:7px 12px;border-color:rgba(255,255,255,.2);background:transparent;color:var(--dim);">
-        ↺ Clear
-      </button>
-    </div>
-    <div id="ll-status" style="font-size:11px;margin-top:8px;color:var(--dim);font-family:monospace;"></div>
-    <div class="chart-box" id="hist-load-chart-box" style="margin-top:14px;">
-      <div class="chart-box-title">Historical Load চার্ট — আলাদা ভিউ</div>
-      <div style="position:relative;height:300px;">
-        <canvas id="histLoadChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
-      </div>
-    </div>
-  </div>
+  <!-- Historical Load panel removed from Live tab (moved to its own main tab) -->
 
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
-    <button class="reset-btn" onclick="resetLive()">সব রিসেট</button>
-    <div style="margin-left:auto;font-size:12px;color:var(--dim);">বর্তমান রেস্ট: <span id="live-current" style="font-family:monospace;font-weight:700;color:var(--gold);">0.00</span></div>
-  </div>
+  <!-- Reset/current row removed as requested -->
 
   <div class="live-layout">
     <!-- Input table -->
@@ -375,22 +387,12 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 
     <!-- Live chart + probability -->
     <div>
-      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px;">
-        <div style="padding:3px 10px;background:rgba(90,156,212,.12);color:#8DC4F0;border-radius:3px;font-size:10px;font-weight:700;">▶ 3:30 Start</div>
-        <div style="padding:3px 10px;background:rgba(201,168,76,.12);color:#E8C97A;border-radius:3px;font-size:10px;font-weight:700;">🎯 7:00 Primary</div>
-        <div style="padding:3px 10px;background:rgba(61,214,140,.12);color:#7DE8B4;border-radius:3px;font-size:10px;font-weight:700;">📐 14:30 Quarter</div>
-        <div style="padding:3px 10px;background:rgba(155,137,212,.12);color:#BDB0E8;border-radius:3px;font-size:10px;font-weight:700;">⚡ 16:45 Semi</div>
-        <div style="padding:3px 10px;background:rgba(224,82,82,.12);color:#F08080;border-radius:3px;font-size:10px;font-weight:700;">🔔 19:00 Final</div>
-        <div style="padding:3px 10px;background:rgba(240,160,96,.12);color:#F5C080;border-radius:3px;font-size:10px;font-weight:700;">🏁 22:30 End</div>
-        <div style="padding:3px 10px;background:rgba(224,82,82,.06);color:#E08060;border-radius:3px;font-size:10px;font-weight:700;border:1px dashed rgba(224,82,82,.3);">AORZ 19:00→22:30</div>
-        <div style="padding:3px 10px;background:rgba(155,137,212,.06);color:#C0A8F0;border-radius:3px;font-size:10px;font-weight:700;border:1px dashed rgba(155,137,212,.3);">AOR 20:45–21:30</div>
-      </div>
+      <!-- Timeline chips removed as requested -->
 
       <div class="chart-box" id="liveChartBox">
         <div class="chart-box-title">লাইভ রেস্ট চার্ট — টাইপ করার সাথে সাথে আপডেট</div>
         <!-- Drawing toolbar -->
         <div id="draw-toolbar" style="display:flex;gap:3px;flex-wrap:wrap;padding:7px 0 8px;align-items:center;">
-          <!-- Chart action buttons -->
           <button class="dtool" onclick="copyChartImage()" title="Copy Image">🖼 Copy</button>
           <button class="dtool" onclick="copyChartLink()" title="Copy shareable link">🔗 Link</button>
           <button class="dtool" onclick="toggleFullscreen()" title="Full screen" id="fs-btn">⛶ Full</button>
@@ -438,16 +440,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
       </div>
       </div>
 
-      <!-- Next candle probability panel -->
-      <div class="chart-box" style="border-color:rgba(201,168,76,0.3);margin-top:10px;">
-        <div class="chart-box-title" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>⚡ পরবর্তী ক্যান্ডেল সম্ভাবনা — <span id="next-candle-time" style="color:var(--gold);font-weight:700;"></span></span>
-          <span style="font-size:10px;color:var(--dim);" id="prob-basis-lbl"></span>
-        </div>
-        <div id="next-prob-display">
-          <div style="color:var(--dim);font-size:11px;font-style:italic;padding:8px 0;">প্রথম ক্যান্ডেলের ডাটা দিন...</div>
-        </div>
-      </div>
+      <!-- Next candle probability panel removed as requested -->
       <div id="live-sess-summary" style="display:none;"></div>
     </div>
   </div>
@@ -606,6 +599,7 @@ const RET={}; // RET[key] = [73 return values]
 // ====================== HIST TAB ======================
 let active=new Set(['Mon_W1']);
 let histChart=null;
+let showHistManualCompare = false;
 
 function tog(k,btn){
   if(active.has(k)){active.delete(k);btn.classList.remove('on');}
@@ -652,6 +646,56 @@ function getLiveDataForCompare(){
   // return null array if no data
   const hasData = vals.some(v=>v!==null);
   return hasData ? vals.map(v=>v===null?NaN:v) : null;
+}
+
+function toggleHistManualCompare(){
+  showHistManualCompare = !showHistManualCompare;
+  const btn = document.getElementById('hist-compare-btn');
+  if(btn){
+    btn.classList.toggle('active', showHistManualCompare);
+    btn.style.color = showHistManualCompare ? 'var(--gold)' : '';
+    btn.textContent = showHistManualCompare ? '⚡ ম্যানুয়াল তুলনা ✓' : '⚡ ম্যানুয়াল তুলনা';
+  }
+  if(histLoadChart){
+    // refresh manual overlay data on current historical chart
+    const liveVals = getLiveDataForCompare();
+    updateHistLoadCompareDataset(liveVals);
+  }
+}
+
+function updateHistLoadCompareDataset(liveVals){
+  if(!histLoadChart) return;
+  const hasLiveVals = showHistManualCompare && liveVals && liveVals.some(v=>!isNaN(v));
+  const existingIndex = histLoadChart.data.datasets.findIndex(ds => ds.label === '⚡ ম্যানুয়াল');
+  if(hasLiveVals){
+    const compareDataset = {
+      label:'⚡ ম্যানুয়াল',
+      data: liveVals,
+      borderColor:'#FFFFFF',
+      backgroundColor:'transparent',
+      borderWidth:2.5,
+      tension:.35,
+      pointRadius:0,
+      pointHoverRadius:5,
+      spanGaps:false,
+      segment:{borderColor:c=>{
+        const v = liveVals[c.p1DataIndex];
+        return (!v&&v!==0)||isNaN(v)?'#FFFFFF':v>=0?'#3DD68C':'#E05C5C';
+      }},
+      order:-1
+    };
+    if(existingIndex >= 0){
+      histLoadChart.data.datasets[existingIndex] = compareDataset;
+    } else {
+      // insert just after historical series, before baseline
+      const baseIndex = histLoadChart.data.datasets.findIndex(ds => ds.label==='');
+      const insertAt = baseIndex >= 0 ? baseIndex : histLoadChart.data.datasets.length;
+      histLoadChart.data.datasets.splice(insertAt, 0, compareDataset);
+    }
+  } else if(existingIndex >= 0){
+    histLoadChart.data.datasets.splice(existingIndex, 1);
+  }
+  histLoadChart.update('none');
 }
 
 function updateHistChart(){
@@ -798,12 +842,17 @@ function recalcLive(){
     }
   }
   const lastVal=restVals.filter(v=>v!==null).slice(-1)[0]||0;
-  document.getElementById('live-current').textContent=(lastVal>=0?'+':'')+lastVal.toFixed(2);
-  document.getElementById('live-current').style.color=lastVal>=0?'var(--green)':'var(--red)';
+  const lcEl = document.getElementById('live-current');
+  if(lcEl){ lcEl.textContent=(lastVal>=0?'+':'')+lastVal.toFixed(2); lcEl.style.color=lastVal>=0?'var(--green)':'var(--red)'; }
   updateLiveChart(restVals);
   updateNextCandleProb(restVals, lastFilledIdx);
   updatePredChart(restVals, lastFilledIdx);
   checkSaveReady();
+
+  if(showHistManualCompare && histLoadChart){
+    const liveVals = getLiveDataForCompare();
+    updateHistLoadCompareDataset(liveVals);
+  }
 
   // Manual input stays separate; do not copy live input values into historical datasets.
 
@@ -949,9 +998,9 @@ function updateLiveChart(restVals){
   if(liveChart){
     liveChart.data.datasets[0].data=[..._liveFilledData];
     liveChart.update('none');
-    setTimeout(initDrawCanvas, 50);
+    setTimeout(initDrawCanvases, 50);
     // Reload drawings with updated pixel positions after scale change
-    setTimeout(loadDrawings, 80);
+    setTimeout(loadCurrentDrawings, 80);
     return;
   }
 
@@ -1023,14 +1072,15 @@ function updateLiveChart(restVals){
       }
     }
   });
-  setTimeout(()=>{ initDrawCanvas(); setTimeout(loadDrawings,200); }, 100);
+  setTimeout(()=>{ initDrawCanvases(); setTimeout(loadCurrentDrawings,200); }, 100);
 }
 
 function updateHistLoadChart(restVals){
   const data = restVals.map(v=>v!==null?v:NaN);
   if(histLoadChart){
     histLoadChart.data.datasets[0].data=[...data];
-    histLoadChart.update('none');
+    const liveVals = getLiveDataForCompare();
+    updateHistLoadCompareDataset(liveVals);
     return;
   }
   const ctx = document.getElementById('histLoadChart').getContext('2d');
@@ -1041,7 +1091,11 @@ function updateHistLoadChart(restVals){
     }},backgroundColor:'rgba(96,184,255,0.08)',fill:'origin',borderWidth:2,tension:.35,pointRadius:0,pointHoverRadius:4,spanGaps:false},
     {data:new Array(73).fill(0),borderColor:'rgba(255,255,255,0.08)',borderWidth:1,pointRadius:0,tension:0}
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'nearest',intersect:false,axis:'x'},animation:false,plugins:{legend:{display:false},tooltip:{enabled:true,backgroundColor:'#1A2332',borderColor:'rgba(96,184,255,.3)',borderWidth:1,filter:i=>i.datasetIndex===0&&!isNaN(i.parsed.y),callbacks:{title:items=>{const t=TIMES[items[0].dataIndex];const mk=TBE_MARKERS.find(x=>x.time===t);return mk?t+' · '+mk.label:t;},label:c=>{if(c.datasetIndex!==0) return null;const v=c.parsed.y;return 'Rest: '+(v>=0?'+':'')+v.toFixed(2);}}}},scales:{x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0},grid:{color:'rgba(255,255,255,.03)'}},y:{ticks:{color:'#7A7060',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'},border:{dash:[3,3]}}}}});
+  try{ window.histLoadChart = histLoadChart; const cv=document.getElementById('histLoadChart'); if(cv) cv._chart = histLoadChart; }catch(e){console.warn('unable to expose histLoadChart to window',e);} 
+  setTimeout(()=>{ initDrawCanvases(); setTimeout(loadCurrentDrawings,200); }, 80);
 }
+// Expose for external calls and to avoid scope issues when invoking early
+try{ window.updateHistLoadChart = updateHistLoadChart; }catch(e){}
 
 let predChart = null;
 
@@ -1182,21 +1236,25 @@ function updateNextCandleProb(restVals, lastIdx){
   const display=document.getElementById('next-prob-display');
   const basisEl=document.getElementById('prob-basis-lbl');
 
+  // If UI elements are removed, skip rendering but still compute silently
+  const safeSetText = (el, txt) => { if(el) el.textContent = txt; };
+  const safeSetHTML = (el, html) => { if(el) el.innerHTML = html; };
+
   if(lastIdx<0){
-    timeEl.textContent='';
-    basisEl.textContent='';
-    display.innerHTML='<div style="color:var(--dim);font-size:11px;font-style:italic;padding:8px 0;">প্রথম ক্যান্ডেলের ডাটা দিন...</div>';
+    safeSetText(timeEl, '');
+    safeSetText(basisEl, '');
+    safeSetHTML(display,'<div style="color:var(--dim);font-size:11px;font-style:italic;padding:8px 0;">প্রথম ক্যান্ডেলের ডাটা দিন...</div>');
     return;
   }
 
   const nextIdx = lastIdx+1;
   if(nextIdx>=73){
-    timeEl.textContent='শেষ ক্যান্ডেল';
-    display.innerHTML='<div style="color:var(--green);font-weight:700;padding:8px 0;">✓ সব ক্যান্ডেল সম্পন্ন</div>';
+    safeSetText(timeEl,'শেষ ক্যান্ডেল');
+    safeSetHTML(display,'<div style="color:var(--green);font-weight:700;padding:8px 0;">✓ সব ক্যান্ডেল সম্পন্ন</div>');
     return;
   }
 
-  timeEl.textContent = TIMES[nextIdx];
+  safeSetText(timeEl, TIMES[nextIdx]);
 
   // For each historical day, get the rest value at lastIdx, then check if next candle
   // rest[nextIdx] > rest[lastIdx] (invest dominant) or < (return dominant)
@@ -1313,8 +1371,7 @@ function resetLive(){
     if(inv)inv.value='';if(ret)ret.value='';
     const cell=document.getElementById(`rest-${i}`);if(cell){cell.textContent='0.00';cell.className='rest-cell rest-zero';}
   }
-  document.getElementById('live-current').textContent='0.00';
-  document.getElementById('live-current').style.color='var(--gold)';
+  const lc = document.getElementById('live-current'); if(lc){ lc.textContent='0.00'; lc.style.color='var(--gold)'; }
   if(liveChart){liveChart.data.datasets[0].data=new Array(73).fill(NaN);liveChart.update('none');}
   document.getElementById('live-sess-summary').innerHTML='';
 }
@@ -1505,6 +1562,11 @@ buildLiveTable();
 loadSavedLiveDates();
 updateHist();
 renderSavedDaysPanel();
+// Initialize empty Historical Load chart after page load so tab shows an empty preview
+(function(){
+  const init = ()=>{ try{ updateHistLoadChart(new Array(73).fill(NaN)); }catch(e){ console.warn('hist init failed', e); } };
+  if(document.readyState === 'complete') init(); else window.addEventListener('load', init);
+})();
 // Auto-load from Supabase cloud on startup
 setTimeout(supaLoadAll, 800);
 
@@ -1886,23 +1948,26 @@ function filterUpdate() { filterPreview(); }
 // ====================== DRAWING TOOLS ======================
 let drawTool   = 'none';
 let drawings   = []; // [{type,x1,y1,x2,y2,color,width,text,selected}]
+let histDrawings = [];
 // Value-based save: converts pixel→value for persistence
 const DRAW_STORE_KEY = 'tbe_drawings';
+const DRAW_STORE_KEY_HIST = 'tbe_drawings_hist';
 
-function pxToVal(px, py) {
-  if(!liveChart) return {px, py};
-  const xScale = liveChart.scales.x;
-  const yScale = liveChart.scales.y;
+function pxToVal(px, py, chart = liveChart) {
+  if(!chart) return {px, py};
+  const xScale = chart.scales.x;
+  const yScale = chart.scales.y;
   const xIdx = xScale ? Math.round(xScale.getValueForPixel(px/devicePixelRatio)) : 0;
   const yVal = yScale ? yScale.getValueForPixel(py/devicePixelRatio) : 0;
   return {xi: Math.max(0,Math.min(72,xIdx)), yv: parseFloat(yVal.toFixed(4))};
 }
 
-function valToPx(xi, yv) {
-  if(!liveChart) return {x:0, y:0};
-  const xScale = liveChart.scales.x;
-  const yScale = liveChart.scales.y;
-  const cv = document.getElementById('drawCanvas');
+function valToPx(xi, yv, chart = liveChart) {
+  if(!chart) return {x:0, y:0};
+  const xScale = chart.scales.x;
+  const yScale = chart.scales.y;
+  // find a representative canvas element to compute dpr
+  const cv = document.getElementById(chart.canvas?.id || 'drawCanvas') || document.getElementById('drawCanvas');
   const dpr = cv ? devicePixelRatio : 1;
   return {
     x: (xScale ? xScale.getPixelForValue(xi) : 0) * dpr,
@@ -1910,51 +1975,68 @@ function valToPx(xi, yv) {
   };
 }
 
-function saveDrawings() {
-  // Convert each drawing's pixel coords to chart values
-  const toSave = drawings.map(d => {
+function _serializeDrawings(arr, chart) {
+  return arr.map(d => {
     if(d.type === 'text') {
-      const v1 = pxToVal(d.x1, d.y1);
+      const v1 = pxToVal(d.x1, d.y1, chart);
       return {...d, _xi1:v1.xi, _yv1:v1.yv, x1:undefined, y1:undefined, selected:false};
     }
     if(d.type === 'hline') {
-      const v1 = pxToVal(0, d.y1);
+      const v1 = pxToVal(0, d.y1, chart);
       return {...d, _yv1:v1.yv, x1:undefined, y1:undefined, selected:false};
     }
-    const v1 = pxToVal(d.x1, d.y1);
-    const v2 = pxToVal(d.x2, d.y2);
+    const v1 = pxToVal(d.x1, d.y1, chart);
+    const v2 = pxToVal(d.x2, d.y2, chart);
     return {...d, _xi1:v1.xi, _yv1:v1.yv, _xi2:v2.xi, _yv2:v2.yv,
       x1:undefined, y1:undefined, x2:undefined, y2:undefined, selected:false};
   });
-  try { localStorage.setItem(DRAW_STORE_KEY, JSON.stringify(toSave)); } catch(e){}
 }
 
-function loadDrawings() {
+function saveCurrentDrawings() {
   try {
-    const raw = localStorage.getItem(DRAW_STORE_KEY);
-    if(!raw) return;
-    const saved = JSON.parse(raw);
-    drawings = saved.map(d => {
-      if(d.type === 'hline') {
-        const p1 = valToPx(0, d._yv1);
-        return {...d, y1: p1.y, x1:0};
-      }
-      if(d.type === 'text') {
-        const p1 = valToPx(d._xi1||0, d._yv1||0);
-        return {...d, x1:p1.x, y1:p1.y};
-      }
-      const p1 = valToPx(d._xi1||0, d._yv1||0);
-      const p2 = valToPx(d._xi2||0, d._yv2||0);
-      return {...d, x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y};
-    });
-    redrawAll();
-  } catch(e) { drawings = []; }
+    if(liveMode === 'load') {
+      const toSave = _serializeDrawings(histDrawings, histLoadChart || liveChart);
+      localStorage.setItem(DRAW_STORE_KEY_HIST, JSON.stringify(toSave));
+    } else {
+      const toSave = _serializeDrawings(drawings, liveChart);
+      localStorage.setItem(DRAW_STORE_KEY, JSON.stringify(toSave));
+    }
+  } catch(e){}
+}
+
+function _deserializeToArray(raw, chart) {
+  const saved = JSON.parse(raw || '[]');
+  return saved.map(d => {
+    if(d.type === 'hline') {
+      const p1 = valToPx(0, d._yv1, chart);
+      return {...d, y1: p1.y, x1:0};
+    }
+    if(d.type === 'text') {
+      const p1 = valToPx(d._xi1||0, d._yv1||0, chart);
+      return {...d, x1:p1.x, y1:p1.y};
+    }
+    const p1 = valToPx(d._xi1||0, d._yv1||0, chart);
+    const p2 = valToPx(d._xi2||0, d._yv2||0, chart);
+    return {...d, x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y};
+  });
+}
+
+function loadCurrentDrawings() {
+  try {
+    const rawLive = localStorage.getItem(DRAW_STORE_KEY);
+    drawings = rawLive ? _deserializeToArray(rawLive, liveChart) : [];
+  } catch(e){ drawings = []; }
+  try {
+    const rawHist = localStorage.getItem(DRAW_STORE_KEY_HIST);
+    histDrawings = rawHist ? _deserializeToArray(rawHist, histLoadChart || liveChart) : [];
+  } catch(e){ histDrawings = []; }
+  redrawAll();
 }
 let drawStart  = null;
 let isDrawing  = false;
 
 // --- Move/drag state ---
-let moveTarget  = null;  // index in drawings[]
+let moveTarget  = null;  // index in active drawings[]
 let moveHandle  = null;  // 'body' | 'p1' | 'p2'
 let moveLast    = null;  // last mouse pos during drag
 let isMoving    = false;
@@ -1964,16 +2046,25 @@ function setTool(tool, btn) {
   drawTool = tool;
   document.querySelectorAll('.dtool').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  const cv = document.getElementById('drawCanvas');
-  if (!cv) return;
-  cv.style.cursor = tool === 'none' ? 'default' : 'crosshair';
+  const cv = (liveMode === 'load') ? document.getElementById('histDrawCanvas') : document.getElementById('drawCanvas');
+  if (cv) cv.style.cursor = tool === 'none' ? 'default' : 'crosshair';
   // deselect all when switching tool
-  drawings.forEach(d => d.selected = false);
+  const arr = (liveMode === 'load') ? histDrawings : drawings;
+  arr.forEach(d => d.selected = false);
   redrawAll();
 }
 
-function getColor() { return document.getElementById('draw-color')?.value || '#E8C97A'; }
-function getWidth() { return parseInt(document.getElementById('draw-width')?.value || 2) * devicePixelRatio; }
+function getColor() {
+  return (liveMode === 'load'
+    ? document.getElementById('hist-draw-color')?.value
+    : document.getElementById('draw-color')?.value) || '#E8C97A';
+}
+function getWidth() {
+  const val = (liveMode === 'load'
+    ? document.getElementById('hist-draw-width')?.value
+    : document.getElementById('draw-width')?.value) || 2;
+  return parseInt(val) * devicePixelRatio;
+}
 function getPos(e, cv) {
   const r = cv.getBoundingClientRect();
   return { x: (e.clientX - r.left) * devicePixelRatio,
@@ -1993,12 +2084,13 @@ function distPtLine(px, py, x1, y1, x2, y2) {
   return Math.hypot(px - (x1+t*dx), py - (y1+t*dy));
 }
 
-function hitTest(pos) {
+function hitTest(pos, arr=null) {
   // returns {idx, handle:'body'|'p1'|'p2'} or null
   // iterate in reverse so topmost drawing wins
+  const list = arr || (liveMode === 'load' ? histDrawings : drawings);
   const r = HIT_R * devicePixelRatio;
-  for (let i = drawings.length - 1; i >= 0; i--) {
-    const d = drawings[i];
+  for (let i = list.length - 1; i >= 0; i--) {
+    const d = list[i];
     if (d.type === 'text') {
       if (Math.hypot(pos.x - d.x1, pos.y - d.y1) < r * 3) return {idx:i, handle:'body'};
       continue;
@@ -2023,14 +2115,12 @@ function hitTest(pos) {
   }
   return null;
 }
-
-function initDrawCanvas() {
-  const cv = document.getElementById('drawCanvas');
+function attachDrawHandlers(cv, arr, wrapId) {
   if (!cv || cv._drawInited) return;
   cv._drawInited = true;
 
   function syncSize() {
-    const wrap = document.getElementById('live-chart-wrap');
+    const wrap = document.getElementById(wrapId);
     if (!wrap) return;
     const r = wrap.getBoundingClientRect();
     cv.width  = r.width  * devicePixelRatio;
@@ -2048,9 +2138,9 @@ function initDrawCanvas() {
 
     // MOVE tool — pick up a drawing
     if (drawTool === 'none') {
-      const hit = hitTest(pos);
+      const hit = hitTest(pos, arr);
       if (hit) {
-        drawings.forEach((d,i) => d.selected = i === hit.idx);
+        arr.forEach((d,i) => d.selected = i === hit.idx);
         moveTarget = hit.idx;
         moveHandle = hit.handle;
         moveLast   = pos;
@@ -2058,7 +2148,7 @@ function initDrawCanvas() {
         cv.style.cursor = moveHandle === 'body' ? 'move' : 'crosshair';
         redrawAll();
       } else {
-        drawings.forEach(d => d.selected = false);
+        arr.forEach(d => d.selected = false);
         redrawAll();
       }
       return;
@@ -2068,7 +2158,7 @@ function initDrawCanvas() {
     if (drawTool === 'text') {
       const txt = prompt('লেবেল লিখুন:');
       if (txt) {
-        drawings.push({type:'text', x1:pos.x, y1:pos.y,
+        arr.push({type:'text', x1:pos.x, y1:pos.y,
           text:txt, color:getColor(), width:getWidth()});
         redrawAll();
       }
@@ -2088,7 +2178,7 @@ function initDrawCanvas() {
     if (isMoving && moveTarget !== null && moveLast) {
       const dx = pos.x - moveLast.x;
       const dy = pos.y - moveLast.y;
-      const d  = drawings[moveTarget];
+      const d  = arr[moveTarget];
       if (moveHandle === 'body') {
         d.x1 += dx; d.y1 += dy;
         if (d.x2 !== undefined) { d.x2 += dx; d.y2 += dy; }
@@ -2104,7 +2194,7 @@ function initDrawCanvas() {
 
     // Hover cursor in move mode
     if (drawTool === 'none' && !isMoving) {
-      const hit = hitTest(pos);
+      const hit = hitTest(pos, arr);
       cv.style.cursor = hit
         ? (hit.handle === 'body' ? 'move' : 'crosshair')
         : 'default';
@@ -2127,7 +2217,7 @@ function initDrawCanvas() {
     if (isMoving) {
       isMoving = false; moveTarget = null; moveHandle = null; moveLast = null;
       cv.style.cursor = 'default';
-      saveDrawings(); // persist after drag
+      saveCurrentDrawings(); // persist after drag
       return;
     }
     if (!isDrawing || !drawStart) return;
@@ -2135,19 +2225,19 @@ function initDrawCanvas() {
     isDrawing = false;
     const dist = Math.hypot(pos.x - drawStart.x, pos.y - drawStart.y);
     if (dist > 5) {
-      drawings.push({type:drawTool, x1:drawStart.x, y1:drawStart.y,
+      arr.push({type:drawTool, x1:drawStart.x, y1:drawStart.y,
         x2:pos.x, y2:pos.y, color:getColor(), width:getWidth()});
     }
     drawStart = null;
     redrawAll();
-    saveDrawings(); // persist to localStorage
+    saveCurrentDrawings(); // persist to localStorage
   });
 
-  // Delete key removes selected drawing
+  // Delete key removes selected drawing (operates on focused/active array)
   document.addEventListener('keydown', e => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
-      const idx = drawings.findIndex(d => d.selected);
-      if (idx >= 0) { drawings.splice(idx, 1); redrawAll(); }
+      const idx = arr.findIndex(d => d.selected);
+      if (idx >= 0) { arr.splice(idx, 1); redrawAll(); }
     }
   });
 
@@ -2159,16 +2249,26 @@ function initDrawCanvas() {
 
 // ---- redraw ----
 function redrawAll() {
+  // Live drawings
   const cv = document.getElementById('drawCanvas');
-  if (!cv) return;
-  const ctx2 = cv.getContext('2d');
-  ctx2.clearRect(0, 0, cv.width, cv.height);
-  drawings.forEach(d => drawShape(ctx2, d, cv));
+  if (cv) {
+    const ctx2 = cv.getContext('2d');
+    ctx2.clearRect(0, 0, cv.width, cv.height);
+    drawings.forEach(d => drawShape(ctx2, d, cv));
+  }
+  // Hist drawings
+  const hcv = document.getElementById('histDrawCanvas');
+  if (hcv) {
+    const hctx = hcv.getContext('2d');
+    hctx.clearRect(0, 0, hcv.width, hcv.height);
+    histDrawings.forEach(d => drawShape(hctx, d, hcv));
+  }
 }
 
 function drawShape(ctx2, d, cv) {
   const W = cv.width, H = cv.height;
   const sel = d.selected;
+  const chartRef = (cv.id === 'histDrawCanvas') ? (histLoadChart || liveChart) : liveChart;
   ctx2.save();
   ctx2.strokeStyle = d.color || '#E8C97A';
   ctx2.fillStyle   = d.color || '#E8C97A';
@@ -2179,8 +2279,8 @@ function drawShape(ctx2, d, cv) {
   switch(d.type) {
     case 'hline':
       ctx2.beginPath(); ctx2.moveTo(0, d.y1); ctx2.lineTo(W, d.y1); ctx2.stroke();
-      if (liveChart) {
-        const val = liveChart.scales.y?.getValueForPixel(d.y1 / devicePixelRatio);
+      if (chartRef) {
+        const val = chartRef.scales.y?.getValueForPixel(d.y1 / devicePixelRatio);
         if (val != null) {
           ctx2.shadowBlur = 0;
           ctx2.font = `bold ${11*devicePixelRatio}px monospace`;
@@ -2329,6 +2429,56 @@ function copyChartLink() {
   });
 }
 
+// Historical helpers (operate on histLoadChart canvas)
+async function copyHistChartImage(){
+  const cv = document.getElementById('histLoadChart');
+  if(!cv) return;
+  const tmp = document.createElement('canvas');
+  tmp.width = cv.width || cv.getAttribute('width') || 800;
+  tmp.height = cv.height || cv.getAttribute('height') || 300;
+  const tc = tmp.getContext('2d');
+  tc.fillStyle = '#0D1117'; tc.fillRect(0,0,tmp.width,tmp.height);
+  tc.drawImage(cv,0,0);
+  const dv = document.getElementById('histDrawCanvas');
+  if(dv) tc.drawImage(dv,0,0);
+  try{ tmp.toBlob(async blob=>{ await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); showToast('✓ Image copied!'); }); }
+  catch(e){ const a=document.createElement('a'); a.href=tmp.toDataURL('image/png'); a.download='TBE_hist_'+new Date().toISOString().slice(0,10)+'.png'; a.click(); showToast('✓ Image downloaded!'); }
+}
+
+function copyHistChartLink(){
+  // No invest/return inputs for historical preview — create link to page with hash indicating selected historical key
+  const month = document.getElementById('ll-month')?.value || '';
+  const week  = document.getElementById('ll-week')?.value  || '';
+  const day   = document.getElementById('ll-day')?.value   || '';
+  if(!month||!week||!day){ showToast('⚠ সিলেক্ট করুন'); return; }
+  const key = month === 'Feb' ? `${day}_${week}` : `${month}_${day}_${week}`;
+  const url = location.href.split('#')[0] + '#h=' + encodeURIComponent(key);
+  navigator.clipboard.writeText(url).then(()=>showToast('✓ Link copied!')).catch(()=>prompt('Copy link:', url));
+}
+
+let isHistFullscreen = false; let histFsOrigParent=null; let histFsOrigNext=null;
+function toggleHistFullscreen(){
+  const wrap = document.getElementById('hist-chart-wrap');
+  const toolbar = document.getElementById('hist-draw-toolbar');
+  const btn = document.getElementById('hist-fs-btn');
+  if(!wrap) return;
+  if(!isHistFullscreen){
+    histFsOrigParent = wrap.parentElement; histFsOrigNext = wrap.nextSibling;
+    const fsDiv = document.createElement('div'); fsDiv.id='hist-chart-fullscreen'; fsDiv.style.cssText='position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;padding:10px;';
+    if(toolbar) fsDiv.appendChild(toolbar.cloneNode(true));
+    fsDiv.appendChild(wrap);
+    document.body.appendChild(fsDiv);
+    // rebind tool buttons inside fullscreen copy (best-effort)
+    fsDiv.querySelectorAll('.dtool[data-tool]').forEach(b=>{ b.onclick = ()=>setTool(b.dataset.tool, b); });
+    isHistFullscreen=true; if(btn) btn.textContent='✕ Exit';
+    setTimeout(()=>{ if(histLoadChart) histLoadChart.resize(); },50);
+  } else {
+    const fsDiv = document.getElementById('hist-chart-fullscreen');
+    if(fsDiv){ if(histFsOrigNext) histFsOrigParent.insertBefore(wrap, histFsOrigNext); else histFsOrigParent.appendChild(wrap); fsDiv.remove(); }
+    isHistFullscreen=false; if(btn) btn.textContent='⛶ Full'; setTimeout(()=>{ if(histLoadChart) histLoadChart.resize(); },50);
+  }
+}
+
 function loadFromHash() {
   const h = location.hash;
   if (!h.startsWith('#d=')) return;
@@ -2374,7 +2524,7 @@ function toggleFullscreen() {
     });
     isFullscreen = true;
     if(btn) btn.textContent = '✕ Exit';
-    setTimeout(()=>{ if(liveChart) liveChart.resize(); initDrawCanvas(); }, 50);
+    setTimeout(()=>{ if(liveChart) liveChart.resize(); initDrawCanvases(); }, 50);
   } else {
     // Exit fullscreen
     const fsDiv = document.getElementById('live-chart-fullscreen');
@@ -2419,19 +2569,46 @@ function clearImportForm(){
   if(log){log.innerHTML='';log.style.display='none';}
 }
 
-function undoDrawing() { drawings.pop(); redrawAll(); saveDrawings(); }
+function undoDrawing() { const arr = (liveMode === 'load') ? histDrawings : drawings; arr.pop(); redrawAll(); saveCurrentDrawings(); }
 
 function clearDrawings() {
-  if (drawings.length && !confirm('সব drawing মুছে দেবেন?')) return;
-  drawings=[]; redrawAll(); saveDrawings();
+  const arr = (liveMode === 'load') ? histDrawings : drawings;
+  if (arr.length && !confirm('সব drawing মুছে দেবেন?')) return;
+  arr.length = 0; redrawAll(); saveCurrentDrawings();
+}
+
+function initDrawCanvases(){
+  // ensure live draw canvas exists
+  let cv = document.getElementById('drawCanvas');
+  const liveWrap = document.getElementById('live-chart-wrap');
+  if(liveWrap && !cv){
+    cv = document.createElement('canvas');
+    cv.id = 'drawCanvas';
+    cv.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;pointer-events:auto;';
+    liveWrap.appendChild(cv);
+  }
+  // ensure hist draw canvas exists
+  let hcv = document.getElementById('histDrawCanvas');
+  const histWrap = document.getElementById('hist-chart-wrap');
+  if(histWrap && !hcv){
+    hcv = document.createElement('canvas');
+    hcv.id = 'histDrawCanvas';
+    hcv.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;pointer-events:auto;';
+    histWrap.appendChild(hcv);
+  }
+  // attach handlers
+  if(cv) attachDrawHandlers(cv, drawings, 'live-chart-wrap');
+  if(hcv) attachDrawHandlers(hcv, histDrawings, 'hist-chart-wrap');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('draw-color')?.addEventListener('input', e => {});
   document.getElementById('draw-width')?.addEventListener('change', e => {});
   document.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => setTimeout(initDrawCanvas, 150));
+    t.addEventListener('click', () => setTimeout(initDrawCanvases, 150));
   });
+  // initialize canvases and load drawings shortly after DOM ready
+  setTimeout(()=>{ initDrawCanvases(); setTimeout(loadCurrentDrawings,200); }, 120);
 });
 
 
@@ -2743,20 +2920,16 @@ function setLiveMode(mode){
   const liveChartBox = document.getElementById('liveChartBox');
 
   if(mode === 'load'){
-    loadBtn.style.background = 'rgba(96,184,255,.18)';
-    loadBtn.style.color = '#8DC4F0';
-    manBtn.style.background = 'var(--bg3)';
-    manBtn.style.color = 'var(--dim)';
-    loadPanel.style.display = 'block';
+    if(loadBtn){ loadBtn.style.background = 'rgba(96,184,255,.18)'; loadBtn.style.color = '#8DC4F0'; }
+    if(manBtn){ manBtn.style.background = 'var(--bg3)'; manBtn.style.color = 'var(--dim)'; }
+    if(loadPanel) loadPanel.style.display = 'block';
     if(inputWrap) inputWrap.style.display = 'none';
     if(liveChartBox) liveChartBox.style.display = 'none';
     if(liveLayout) liveLayout.style.gridTemplateColumns = '1fr';
   } else {
-    manBtn.style.background = 'rgba(201,168,76,.18)';
-    manBtn.style.color = 'var(--gold)';
-    loadBtn.style.background = 'var(--bg3)';
-    loadBtn.style.color = 'var(--dim)';
-    loadPanel.style.display = 'none';
+    if(manBtn){ manBtn.style.background = 'rgba(201,168,76,.18)'; manBtn.style.color = 'var(--gold)'; }
+    if(loadBtn){ loadBtn.style.background = 'var(--bg3)'; loadBtn.style.color = 'var(--dim)'; }
+    if(loadPanel) loadPanel.style.display = 'none';
     if(inputWrap) inputWrap.style.display = 'block';
     if(liveChartBox) liveChartBox.style.display = 'block';
     if(liveLayout) liveLayout.style.gridTemplateColumns = '400px 1fr';
