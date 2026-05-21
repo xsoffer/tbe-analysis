@@ -343,6 +343,12 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
       </button>
     </div>
     <div id="ll-status" style="font-size:11px;margin-top:8px;color:var(--dim);font-family:monospace;"></div>
+    <div class="chart-box" style="margin-top:14px;">
+      <div class="chart-box-title">Historical লোড চার্ট — লোড করা ডাটার প্রিভিউ</div>
+      <div style="position:relative;height:300px;">
+        <canvas id="loadChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+      </div>
+    </div>
   </div>
 
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
@@ -759,6 +765,7 @@ function buildSessTable(){
 const sessRowClass=['asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row'];
 const sessBreaks={0:'▶ 3:30 Start → 7:00 Primary',11:'🎯 7:00 Primary → 14:30 Quarter',41:'📐 14:30 Quarter → 16:45 Semi',50:'⚡ 16:45 Semi → 19:00 Final',59:'🔔 19:00 Final → 22:30 End  (AORZ)'};
 let liveChart=null;
+let loadChart=null;
 
 function buildLiveTable(){
   const tb=document.getElementById('live-tbody');tb.innerHTML='';
@@ -1045,6 +1052,25 @@ function updateLiveChart(restVals){
   setTimeout(()=>{ initDrawCanvas(); setTimeout(loadDrawings,200); }, 100);
 }
 
+function updateLoadChart(restVals){
+  const _loadFilledData = restVals.map(v=>v!==null?v:NaN);
+
+  if(loadChart){
+    loadChart.data.datasets[0].data=[..._loadFilledData];
+    loadChart.update('none');
+    return;
+  }
+
+  const ctx = document.getElementById('loadChart').getContext('2d');
+  loadChart = new Chart(ctx,{type:'line',plugins:[tbePlugin],data:{labels:TIMES,datasets:[
+    {label:'Historical Load',data:[..._loadFilledData],borderColor:'#C9A84C',segment:{borderColor:c=>{
+      const v=_loadFilledData[c.p1DataIndex];
+      return(!v&&v!==0)||isNaN(v)?'#C9A84C':v>=0?'#3DD68C':'#E05C5C';
+    }},backgroundColor:'rgba(201,168,76,0.06)',fill:'origin',borderWidth:2,tension:.35,pointRadius:0,pointHoverRadius:4,spanGaps:false},
+    {data:new Array(73).fill(0),borderColor:'rgba(255,255,255,0.08)',borderWidth:1,pointRadius:0,tension:0}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'nearest',intersect:false,axis:'x'},animation:false,plugins:{legend:{display:false},tooltip:{enabled:true,backgroundColor:'#1A2332',borderColor:'rgba(201,168,76,.3)',borderWidth:1,filter:i=>i.datasetIndex===0&&!isNaN(i.parsed.y),callbacks:{title:items=>{const t=TIMES[items[0].dataIndex];const mk=TBE_MARKERS.find(x=>x.time===t);return mk?t+' · '+mk.label:t;},label:c=>{if(c.datasetIndex!==0) return null;const v=c.parsed.y;return 'Rest: '+(v>=0?'+':'')+v.toFixed(2);}}}},scales:{x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0},grid:{color:'rgba(255,255,255,.03)'}},y:{ticks:{color:'#7A7060',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'},border:{dash:[3,3]}}}}});
+}
+
 let predChart = null;
 
 function updatePredChart(restVals, lastIdx) {
@@ -1318,6 +1344,7 @@ function resetLive(){
   document.getElementById('live-current').textContent='0.00';
   document.getElementById('live-current').style.color='var(--gold)';
   if(liveChart){liveChart.data.datasets[0].data=new Array(73).fill(NaN);liveChart.update('none');}
+  if(loadChart){loadChart.data.datasets[0].data=new Array(73).fill(NaN);loadChart.update('none');}
   document.getElementById('live-sess-summary').innerHTML='';
 }
 
@@ -2837,6 +2864,7 @@ function loadHistoricalToLive(){
   const filled = restData.map(v => v===0 ? NaN : v);
   _liveFilledData = restData.map(v => isNaN(v)?NaN:v);
   updateLiveChart(restData);
+  updateLoadChart(restData);
   updateNextCandleProb(restData, restData.reduce((last,v,i)=>v!==0?i:last,-1));
 
   // Update current rest display
