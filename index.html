@@ -135,15 +135,15 @@
     </div>
 
     <!-- TBE ভার্সন সেকশন -->
-    <div class="section-title">📈 TBE সিরিজ (ট্রেডিং ব্লাড এন্ট্রি)</div>
+    <div class="section-title">📈 TBE সিরিজ</div>
     <div class="version-grid" id="versionGrid">
         <!-- ভার্সনগুলো জাভাস্ক্রিপ্ট দিয়ে জেনারেট করব -->
     </div>
 
-    <!-- APM টুলস সেকশন -->
-    <div class="section-title">⚙️ অ্যাডভান্সড টুলস</div>
-    <div class="version-grid" id="extraToolsGrid">
-        <!-- এক্সট্রা টুলস এখানে জেনারেট হবে -->
+    <!-- গ্যারেজ টুলস সেকশন -->
+    <div class="section-title">🏠 গ্যারেজ টুলস</div>
+    <div class="version-grid" id="garageToolsGrid">
+        <!-- গ্যারেজ টুলস এখানে জেনারেট হবে -->
     </div>
 
     <div class="footer">
@@ -161,10 +161,9 @@
         versions.push(i);
     }
 
-    // APM এবং অন্যান্য টুলসের লিস্ট
-    const extraTools = [
-        { name: "APM", file: "apm", icon: "🧠", desc: "অ্যালগরিদম প্রিসিশন ম্যাপিং" }
-        // ভবিষ্যতে যোগ করতে চাইলে এখানে যোগ করুন
+    // শুধু গ্যারেজ টুলস (APM রিমুভ করা হয়েছে)
+    const garageTools = [
+        { name: "গ্যারেজ লিস্ট", file: "garage", icon: "🏠", desc: "অফিসের গ্যারেজ ডকুমেন্ট" }
     ];
 
     // আইকন অ্যাসাইনমেন্ট
@@ -196,11 +195,11 @@
         });
     }
 
-    function generateExtraTools() {
-        const grid = document.getElementById('extraToolsGrid');
+    function generateGarageTools() {
+        const grid = document.getElementById('garageToolsGrid');
         grid.innerHTML = '';
         
-        extraTools.forEach((tool) => {
+        garageTools.forEach((tool) => {
             const card = document.createElement('div');
             card.className = 'version-card';
             card.onclick = () => openInNewTab(tool.file);
@@ -222,7 +221,7 @@
 
     // পেজ লোড হলে কার্ড জেনারেট করুন
     generateVersionCards();
-    generateExtraTools();
+    generateGarageTools();
 </script>
 </body>
 </html>
