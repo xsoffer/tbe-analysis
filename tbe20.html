@@ -14,7 +14,7 @@
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;min-height:100vh;}
 /* Header */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.hdr-title{font-size:17px;font-weight:700;color:var(--gold-l);}
+.hdr-title{font-size:17px;font-weight:700;color:#0055AA;}
 .hdr-sub{font-size:11px;color:var(--dim);margin-top:2px;}
 /* Tabs */
 .tab-bar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;}
@@ -137,15 +137,16 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 <div class="hdr">
   <div>
     <div class="hdr-title">TBE Volume Analysis — APM</div>
-    <div class="hdr-sub">ফেব্রু–মে ২০২৬ · ১৬+ সপ্তাহ · ৭৩ ক্যান্ডেল/দিন | লাইভ ইনপুট + সেশন সম্ভাবনা</div>
+    <div class="hdr-sub">ফেব্রু–মে ২০২৬ · ১৬+ সপ্তাহ · ৭৩ ক্যান্ডেল/দিন | Daily Input + Monthly/Weekly Overview</div>
   </div>
   <div style="font-size:11px;color:var(--dim);">↑ শূন্যের উপরে = ব্যাংক ইনজেক্ট করছে (BUY) · নিচে = উইথড্র করছে (SELL)</div>
 </div>
 
 <div class="tab-bar">
-  <button class="tab active" onclick="switchTab('hist')">📊 ইতিহাস (৪ সপ্তাহ)</button>
-  <button class="tab" onclick="switchTab('histload')">📂 Historical লোড</button>
-  <button class="tab" onclick="switchTab('live')">⌨️ লাইভ ইনপুট</button>
+  <button class="tab active" onclick="switchTab('hist')">📅 Monthly</button>
+  <button class="tab" onclick="switchTab('historical')">📆 Weekly</button>
+  <button class="tab" onclick="switchTab('live')">📋 Daily</button>
+  <button class="tab" onclick="switchTab('preview')">🔭 Overview</button>
 </div>
 
 <!-- ========== HISTORICAL TAB ========== -->
@@ -248,81 +249,6 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div class="ftags-row" id="active-tags"></div>
   </div>
 
-<!-- ========== HISTORICAL LOAD TAB ========== -->
-<div id="tab-histload" class="panel">
-  <div id="hist-load-panel" style="background:var(--bg2);border:1px solid rgba(96,184,255,.25);border-radius:6px;padding:14px 16px;margin-bottom:12px;">
-    <div style="font-size:11px;color:#8DC4F0;font-weight:700;letter-spacing:.4px;margin-bottom:12px;">📂 Historical ডাটা লোড করুন</div>
-    <div style="font-size:10px;color:var(--dim);line-height:1.6;margin-bottom:12px;">এই সেকশন ব্যবহার করে historical ডেটা থেকে মাস, সপ্তাহ ও দিন বেছে নিয়ে লোড করুন। লোড করলে ঐ ডেটা লাইভ ইনপুট টেবিলে চলে আসবে এবং চার্টে দেখাবে।</div>
-    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-      <div>
-        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">মাস</div>
-        <select class="imp-select" id="ll-month" onchange="updateLiveLoadWeeks()">
-          <option value="">— সিলেক্ট করুন —</option>
-          <option value="Feb">ফেব্রুয়ারি ২০২৬</option>
-          <option value="Mar">মার্চ ২০২৬</option>
-          <option value="Apr">এপ্রিল ২০২৬</option>
-          <option value="May">মে ২০২৬</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">সপ্তাহ</div>
-        <select class="imp-select" id="ll-week" onchange="updateLiveLoadDays()">
-          <option value="">— সিলেক্ট করুন —</option>
-          <option value="W1">সপ্তাহ ১</option>
-          <option value="W2">সপ্তাহ ২</option>
-          <option value="W3">সপ্তাহ ৩</option>
-          <option value="W4">সপ্তাহ ৪</option>
-          <option value="W5">সপ্তাহ ৫</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--dim);margin-bottom:4px;">দিন</div>
-        <select class="imp-select" id="ll-day">
-          <option value="">— সিলেক্ট করুন —</option>
-          <option value="Mon">সোমবার</option>
-          <option value="Tue">মঙ্গলবার</option>
-          <option value="Wed">বুধবার</option>
-          <option value="Thu">বৃহস্পতিবার</option>
-          <option value="Fri">শুক্রবার</option>
-        </select>
-      </div>
-      <button class="imp-btn" onclick="loadHistoricalToLive()" style="padding:7px 16px;">✅ লোড করুন</button>
-      <button class="imp-btn" onclick="clearLiveLoad()" style="padding:7px 12px;border-color:rgba(255,255,255,.2);background:transparent;color:var(--dim);">↺ Clear</button>
-    </div>
-    <div id="ll-status" style="font-size:11px;margin-top:8px;color:var(--dim);font-family:monospace;"></div>
-    <div class="chart-box" id="hist-load-chart-box" style="margin-top:14px;">
-      <div class="chart-box-title">Historical Load চার্ট — আলাদা ভিউ</div>
-      <div id="hist-draw-toolbar" style="display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 8px;align-items:center;margin-bottom:6px;">
-        <button class="dtool" onclick="copyHistChartImage()" title="Copy Image">🖼 Copy</button>
-        <button class="dtool" onclick="copyHistChartLink()" title="Copy shareable link">🔗 Link</button>
-        <button class="dtool" id="hist-compare-btn" onclick="toggleHistManualCompare()" title="ম্যানুয়াল তুলনা">⚡ ম্যানুয়াল তুলনা</button>
-        <button class="dtool" onclick="toggleHistFullscreen()" title="Full screen" id="hist-fs-btn">⛶ Full</button>
-        <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
-        <span style="font-size:10px;color:var(--dim);margin-right:4px;">✏️</span>
-        <button class="dtool active" data-tool="none" onclick="setTool('none',this)" title="Move / No draw">↖ Move</button>
-        <button class="dtool" data-tool="hline" onclick="setTool('hline',this)" title="Horizontal Line">— H-Line</button>
-        <button class="dtool" data-tool="tline" onclick="setTool('tline',this)" title="Trend Line">╱ Trend</button>
-        <button class="dtool" data-tool="rect" onclick="setTool('rect',this)" title="Rectangle Zone">▭ Zone</button>
-        <button class="dtool" data-tool="fib" onclick="setTool('fib',this)" title="DRT Levels">◫ DRT</button>
-        <button class="dtool" data-tool="text" onclick="setTool('text',this)" title="Text Label">T Label</button>
-        <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
-        <input type="color" id="hist-draw-color" value="#E8C97A" style="width:26px;height:26px;border:none;background:none;cursor:pointer;border-radius:3px;" title="রং">
-        <select id="hist-draw-width" style="background:var(--bg3);border:1px solid var(--border2);color:var(--dim);border-radius:3px;font-size:10px;padding:2px 4px;">
-          <option value="1">পাতলা</option>
-          <option value="2" selected>মধ্যম</option>
-          <option value="3">মোটা</option>
-        </select>
-        <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
-        <button class="dtool" onclick="undoDrawing()" title="Undo">↩ Undo</button>
-        <button class="dtool" onclick="clearDrawings()" title="সব মুছুন" style="color:#F08080;">🗑 Clear</button>
-      </div>
-      <div style="position:relative;height:300px;" id="hist-chart-wrap">
-        <canvas id="histLoadChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
   <!-- Saved live days panel -->
   <div id="saved-days-panel" style="display:none;background:var(--bg2);border:1px solid rgba(61,214,140,.25);border-radius:6px;padding:12px 16px;margin-bottom:12px;">
     <div style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.5px;margin-bottom:10px;">📅 সেভ করা দিনগুলো</div>
@@ -342,9 +268,29 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div style="padding:3px 10px;background:rgba(155,137,212,.06);color:#C0A8F0;border-radius:3px;font-size:10px;font-weight:700;border:1px dashed rgba(155,137,212,.3);">AOR 20:45–21:30</div>
   </div>
 
+  <!-- Session Range Selector for ইতিহাস tab -->
+  <div class="fbox" style="margin-bottom:8px;">
+    <div style="font-size:10px;color:var(--dim);letter-spacing:.5px;margin-bottom:8px;">📍 কত পর্যন্ত দেখতে চান সিলেক্ট করুন</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
+      <button class="sess-range-btn" id="hsr-start"   onclick="setHistSessRange('start')"   style="--sc:rgba(90,156,212,.8);--sbg:rgba(90,156,212,.15);">▶ Start<span class="sr-time">3:30</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="hsr-primary" onclick="setHistSessRange('primary')" style="--sc:rgba(201,168,76,.9);--sbg:rgba(201,168,76,.15);">🎯 Primary<span class="sr-time">7:00</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="hsr-quarter" onclick="setHistSessRange('quarter')" style="--sc:rgba(61,214,140,.9);--sbg:rgba(61,214,140,.15);">📐 Quarter<span class="sr-time">14:30</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="hsr-semi"    onclick="setHistSessRange('semi')"    style="--sc:rgba(155,137,212,.9);--sbg:rgba(155,137,212,.15);">⚡ Semi<span class="sr-time">16:45</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="hsr-final"   onclick="setHistSessRange('final')"   style="--sc:rgba(224,82,82,.9);--sbg:rgba(224,82,82,.15);">🔔 Final<span class="sr-time">19:00</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn active" id="hsr-end" onclick="setHistSessRange('end')" style="--sc:rgba(240,160,96,.9);--sbg:rgba(240,160,96,.15);">🏁 End<span class="sr-time">22:30</span></button>
+      <div style="width:1px;height:22px;background:var(--border2);margin:0 4px;"></div>
+      <span id="hsr-info" style="font-size:11px;font-family:monospace;color:var(--gold);">সব ক্যান্ডেল (73/73)</span>
+    </div>
+  </div>
+
   <div class="chart-box">
     <div class="chart-box-title" style="display:flex;justify-content:space-between;align-items:center;">
-      <span>রেস্ট ভলিউম — সময়ের সাথে পরিবর্তন</span>
+      <span>📅 Monthly — রেস্ট ভলিউম</span>
       <button class="dtool" id="live-compare-btn" onclick="toggleLiveCompare()" title="লাইভ সেশনের ডাটা তুলনা করুন">
         ⚡ লাইভ তুলনা
       </button>
@@ -354,20 +300,81 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     <div class="zero-note">↑ শূন্যের উপরে = ব্যাংক ইনজেক্ট করছে (BUY) · শূন্যের নিচে = উইথড্র করছে (SELL)</div>
   </div>
 
-  <div class="sec-title">সেশন ব্রেকডাউন — প্রতিটি সেশনে ব্যাংকের কার্যক্রম</div>
-  <table class="sess-tbl">
-    <thead><tr><th>দিন</th><th>🎯 Primary (7:00)</th><th>📐 Quarter (14:30)</th><th>🔔 Final (19:00)</th><th>🏁 End (22:30)</th><th>দিকনির্দেশ</th></tr></thead>
-    <tbody id="sess-tbody"></tbody>
-  </table>
 </div>
 
 <!-- ========== LIVE INPUT TAB ========== -->
 <div id="tab-live" class="panel">
-  <!-- Manual input only (mode selector removed) -->
 
-  <!-- Historical Load panel removed from Live tab (moved to its own main tab) -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+    <button class="reset-btn" onclick="resetLive()">সব রিসেট</button>
+    <button onclick="toggleSavePanel()" id="save-panel-btn" style="padding:6px 14px;background:rgba(61,214,140,.1);border:1px solid rgba(61,214,140,.3);color:var(--green);font-size:11px;cursor:pointer;border-radius:3px;font-family:inherit;">💾 সেভ করুন</button>
+    <button onclick="toggleManagePanel()" id="manage-panel-btn" style="padding:6px 14px;background:rgba(96,184,255,.1);border:1px solid rgba(96,184,255,.3);color:#8DC4F0;font-size:11px;cursor:pointer;border-radius:3px;font-family:inherit;">📋 সেভ করা ডাটা</button>
+    <div style="margin-left:auto;font-size:12px;color:var(--dim);">বর্তমান রেস্ট: <span id="live-current" style="font-family:monospace;font-weight:700;color:var(--gold);">0.00</span></div>
+  </div>
 
-  <!-- Reset/current row removed as requested -->
+  <!-- Manage Saved Data Panel -->
+  <div id="daily-manage-panel" style="display:none;background:var(--bg2);border:1px solid rgba(96,184,255,.25);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:12px;color:#8DC4F0;font-weight:700;letter-spacing:.4px;">📋 সেভ করা ডাটা — এডিট / মুছুন</div>
+      <button onclick="toggleManagePanel()" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;padding:0 4px;">✕</button>
+    </div>
+    <div id="manage-list" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
+    <div id="manage-empty" style="color:var(--dim);font-size:11px;font-style:italic;display:none;">কোনো সেভ করা ডাটা নেই</div>
+  </div>
+
+  <!-- Save Panel -->
+  <div id="daily-save-panel" style="display:none;background:var(--bg2);border:1px solid rgba(61,214,140,.25);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-size:12px;color:var(--green);font-weight:700;letter-spacing:.4px;margin-bottom:14px;">💾 Daily ডাটা সেভ করুন</div>
+    <div class="frow" style="flex-wrap:wrap;gap:10px;">
+
+      <div class="fgroup">
+        <div class="fgroup-lbl">মাস</div>
+        <div class="fchips" id="sv-months">
+          <div class="fchip mfeb" data-val="Feb" onclick="hlToggle(this,'sv-months')">Feb</div>
+          <div class="fchip mmar" data-val="Mar" onclick="hlToggle(this,'sv-months')">Mar</div>
+          <div class="fchip mapr" data-val="Apr" onclick="hlToggle(this,'sv-months')">Apr</div>
+          <div class="fchip mmay" data-val="May" onclick="hlToggle(this,'sv-months')">May</div>
+          <div class="fchip mgen" data-val="Jun" onclick="hlToggle(this,'sv-months')">Jun</div>
+          <div class="fchip mgen" data-val="Jul" onclick="hlToggle(this,'sv-months')">Jul</div>
+          <div class="fchip mgen" data-val="Aug" onclick="hlToggle(this,'sv-months')">Aug</div>
+        </div>
+      </div>
+
+      <div class="fdivider"></div>
+
+      <div class="fgroup">
+        <div class="fgroup-lbl">সপ্তাহ</div>
+        <div class="fchips" id="sv-weeks">
+          <div class="fchip week" data-val="W1" onclick="hlToggle(this,'sv-weeks')">W1</div>
+          <div class="fchip week" data-val="W2" onclick="hlToggle(this,'sv-weeks')">W2</div>
+          <div class="fchip week" data-val="W3" onclick="hlToggle(this,'sv-weeks')">W3</div>
+          <div class="fchip week" data-val="W4" onclick="hlToggle(this,'sv-weeks')">W4</div>
+          <div class="fchip week" data-val="W5" onclick="hlToggle(this,'sv-weeks')">W5</div>
+        </div>
+      </div>
+
+      <div class="fdivider"></div>
+
+      <div class="fgroup">
+        <div class="fgroup-lbl">দিন</div>
+        <div class="fchips" id="sv-days">
+          <div class="fchip mon" data-val="Mon" onclick="hlToggle(this,'sv-days')">সোম</div>
+          <div class="fchip tue" data-val="Tue" onclick="hlToggle(this,'sv-days')">মঙ্গল</div>
+          <div class="fchip wed" data-val="Wed" onclick="hlToggle(this,'sv-days')">বুধ</div>
+          <div class="fchip thu" data-val="Thu" onclick="hlToggle(this,'sv-days')">বৃহ</div>
+          <div class="fchip fri" data-val="Fri" onclick="hlToggle(this,'sv-days')">শুক্র</div>
+        </div>
+      </div>
+
+      <div class="fdivider"></div>
+
+      <div class="factions">
+        <button class="fact-btn apply" onclick="saveDailyData()">✅ সেভ করুন</button>
+        <button class="fact-btn" onclick="toggleSavePanel()">✕ বাতিল</button>
+      </div>
+    </div>
+    <div id="sv-status" style="font-size:11px;margin-top:10px;min-height:16px;font-family:monospace;"></div>
+  </div>
 
   <div class="live-layout">
     <!-- Input table -->
@@ -388,10 +395,19 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 
     <!-- Live chart + probability -->
     <div>
-      <!-- Timeline chips removed as requested -->
+      <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px;">
+        <div style="padding:3px 10px;background:rgba(90,156,212,.12);color:#8DC4F0;border-radius:3px;font-size:10px;font-weight:700;">▶ 3:30 Start</div>
+        <div style="padding:3px 10px;background:rgba(201,168,76,.12);color:#E8C97A;border-radius:3px;font-size:10px;font-weight:700;">🎯 7:00 Primary</div>
+        <div style="padding:3px 10px;background:rgba(61,214,140,.12);color:#7DE8B4;border-radius:3px;font-size:10px;font-weight:700;">📐 14:30 Quarter</div>
+        <div style="padding:3px 10px;background:rgba(155,137,212,.12);color:#BDB0E8;border-radius:3px;font-size:10px;font-weight:700;">⚡ 16:45 Semi</div>
+        <div style="padding:3px 10px;background:rgba(224,82,82,.12);color:#F08080;border-radius:3px;font-size:10px;font-weight:700;">🔔 19:00 Final</div>
+        <div style="padding:3px 10px;background:rgba(240,160,96,.12);color:#F5C080;border-radius:3px;font-size:10px;font-weight:700;">🏁 22:30 End</div>
+        <div style="padding:3px 10px;background:rgba(224,82,82,.06);color:#E08060;border-radius:3px;font-size:10px;font-weight:700;border:1px dashed rgba(224,82,82,.3);">AORZ 19:00→22:30</div>
+        <div style="padding:3px 10px;background:rgba(155,137,212,.06);color:#C0A8F0;border-radius:3px;font-size:10px;font-weight:700;border:1px dashed rgba(155,137,212,.3);">AOR 20:45–21:30</div>
+      </div>
 
-      <div class="chart-box" id="liveChartBox">
-        <div class="chart-box-title">লাইভ রেস্ট চার্ট — টাইপ করার সাথে সাথে আপডেট</div>
+      <div class="chart-box">
+        <div class="chart-box-title">⌨️ লাইভ রেস্ট চার্ট — টাইপ করার সাথে সাথে আপডেট</div>
         <!-- Drawing toolbar -->
         <div id="draw-toolbar" style="display:flex;gap:3px;flex-wrap:wrap;padding:7px 0 8px;align-items:center;">
           <button class="dtool" onclick="copyChartImage()" title="Copy Image">🖼 Copy</button>
@@ -418,36 +434,192 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
           <div style="width:1px;height:18px;background:var(--border);margin:0 4px;"></div>
           <button class="dtool" id="part-toggle" onclick="togglePartZones()" title="Participant Volume Zones">👥 Participant</button>
         </div>
-        <!-- Chart + overlay canvas -->
-        <!-- Chart with inline UP/DOWN overlay -->
-      <div style="position:relative;height:300px;" id="live-chart-wrap">
-        <canvas id="liveChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
-        <canvas id="drawCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;"></canvas>
-        <!-- UP/DOWN overlay inside chart -->
-        <div id="pred-overlay" style="position:absolute;top:8px;right:8px;display:none;background:rgba(13,17,23,0.82);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:6px 10px;pointer-events:none;min-width:90px;">
-          <div style="font-size:9px;color:var(--dim);text-align:center;margin-bottom:4px;font-family:monospace;" id="pred-candle-lbl"></div>
-          <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
-            <div style="text-align:center;">
-              <div style="font-size:9px;color:var(--green);">▲ UP</div>
-              <div id="pred-up-pct" style="font-size:18px;font-weight:700;color:var(--green);font-family:monospace;line-height:1.2;">—</div>
-            </div>
-            <div style="width:1px;height:28px;background:rgba(255,255,255,0.1);"></div>
-            <div style="text-align:center;">
-              <div style="font-size:9px;color:var(--red);">▼ DOWN</div>
-              <div id="pred-dn-pct" style="font-size:18px;font-weight:700;color:var(--red);font-family:monospace;line-height:1.2;">—</div>
+        <div style="position:relative;height:300px;" id="live-chart-wrap">
+          <canvas id="liveChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+          <canvas id="drawCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;"></canvas>
+          <div id="pred-overlay" style="position:absolute;top:8px;right:8px;display:none;background:rgba(13,17,23,0.82);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:6px 10px;pointer-events:none;min-width:90px;">
+            <div style="font-size:9px;color:var(--dim);text-align:center;margin-bottom:4px;font-family:monospace;" id="pred-candle-lbl"></div>
+            <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
+              <div style="text-align:center;">
+                <div style="font-size:9px;color:var(--green);">▲ UP</div>
+                <div id="pred-up-pct" style="font-size:18px;font-weight:700;color:var(--green);font-family:monospace;line-height:1.2;">—</div>
+              </div>
+              <div style="width:1px;height:28px;background:rgba(255,255,255,0.1);"></div>
+              <div style="text-align:center;">
+                <div style="font-size:9px;color:var(--red);">▼ DOWN</div>
+                <div id="pred-dn-pct" style="font-size:18px;font-weight:700;color:var(--red);font-family:monospace;line-height:1.2;">—</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
 
-      <!-- Next candle probability panel removed as requested -->
-      <div id="live-sess-summary" style="display:none;"></div>
     </div>
   </div>
 </div>
 
-<!-- ========== PROBABILITY TAB ========== -->
+<!-- ========== HISTORICAL TAB ========== -->
+<div id="tab-historical" class="panel">
+
+  <!-- Selector panel — chip style like ইতিহাস tab -->
+  <div class="fbox">
+    <div class="frow">
+
+      <!-- মাস -->
+      <div class="fgroup">
+        <div class="fgroup-lbl">মাস</div>
+        <div class="fchips" id="hl-months">
+          <div class="fchip mfeb" data-val="Feb" onclick="hlToggle(this,'hl-months')">Feb</div>
+          <div class="fchip mmar" data-val="Mar" onclick="hlToggle(this,'hl-months')">Mar</div>
+          <div class="fchip mapr" data-val="Apr" onclick="hlToggle(this,'hl-months')">Apr</div>
+          <div class="fchip mmay" data-val="May" onclick="hlToggle(this,'hl-months')">May</div>
+          <div class="fchip mgen" data-val="Jun" onclick="hlToggle(this,'hl-months')">Jun</div>
+          <div class="fchip mgen" data-val="Jul" onclick="hlToggle(this,'hl-months')">Jul</div>
+          <div class="fchip mgen" data-val="Aug" onclick="hlToggle(this,'hl-months')">Aug</div>
+        </div>
+      </div>
+
+      <div class="fdivider"></div>
+
+      <!-- সপ্তাহ -->
+      <div class="fgroup">
+        <div class="fgroup-lbl">সপ্তাহ</div>
+        <div class="fchips" id="hl-weeks">
+          <div class="fchip week" data-val="W1" onclick="hlToggle(this,'hl-weeks')">W1</div>
+          <div class="fchip week" data-val="W2" onclick="hlToggle(this,'hl-weeks')">W2</div>
+          <div class="fchip week" data-val="W3" onclick="hlToggle(this,'hl-weeks')">W3</div>
+          <div class="fchip week" data-val="W4" onclick="hlToggle(this,'hl-weeks')">W4</div>
+          <div class="fchip week" data-val="W5" onclick="hlToggle(this,'hl-weeks')">W5</div>
+        </div>
+      </div>
+
+      <div class="fdivider"></div>
+
+      <!-- দিন -->
+      <div class="fgroup">
+        <div class="fgroup-lbl">দিন</div>
+        <div class="fchips" id="hl-days">
+          <div class="fchip mon" data-val="Mon" onclick="hlToggle(this,'hl-days')">সোম</div>
+          <div class="fchip tue" data-val="Tue" onclick="hlToggle(this,'hl-days')">মঙ্গল</div>
+          <div class="fchip wed" data-val="Wed" onclick="hlToggle(this,'hl-days')">বুধ</div>
+          <div class="fchip thu" data-val="Thu" onclick="hlToggle(this,'hl-days')">বৃহ</div>
+          <div class="fchip fri" data-val="Fri" onclick="hlToggle(this,'hl-days')">শুক্র</div>
+        </div>
+      </div>
+
+      <div class="fdivider"></div>
+
+      <!-- Actions -->
+      <div class="factions">
+        <button class="fact-btn apply" onclick="loadHistoricalToLive()">✅ লোড করুন</button>
+        <button class="fact-btn" onclick="clearLiveLoad()">↺ Clear</button>
+      </div>
+
+    </div>
+    <div id="ll-status" style="font-size:11px;margin-top:10px;color:var(--dim);font-family:monospace;min-height:16px;"></div>
+  </div>
+
+  <!-- Session Range Selector — clickable -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:10px;">
+    <div style="font-size:10px;color:var(--dim);letter-spacing:.5px;margin-bottom:8px;">📍 কত পর্যন্ত দেখতে চান সিলেক্ট করুন (ক্লিক করে যোগ করুন)</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
+      <button class="sess-range-btn" id="sr-start"   onclick="setSessRange('start')"   data-idx="0"  style="--sc:rgba(90,156,212,.8);--sbg:rgba(90,156,212,.15);">▶ Start<span class="sr-time">3:30</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="sr-primary" onclick="setSessRange('primary')" data-idx="10" style="--sc:rgba(201,168,76,.9);--sbg:rgba(201,168,76,.15);">🎯 Primary<span class="sr-time">7:00</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="sr-quarter" onclick="setSessRange('quarter')" data-idx="40" style="--sc:rgba(61,214,140,.9);--sbg:rgba(61,214,140,.15);">📐 Quarter<span class="sr-time">14:30</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="sr-semi"    onclick="setSessRange('semi')"    data-idx="49" style="--sc:rgba(155,137,212,.9);--sbg:rgba(155,137,212,.15);">⚡ Semi<span class="sr-time">16:45</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn" id="sr-final"   onclick="setSessRange('final')"   data-idx="58" style="--sc:rgba(224,82,82,.9);--sbg:rgba(224,82,82,.15);">🔔 Final<span class="sr-time">19:00</span></button>
+      <div style="color:var(--border2);font-size:12px;">›</div>
+      <button class="sess-range-btn active" id="sr-end" onclick="setSessRange('end')" data-idx="72" style="--sc:rgba(240,160,96,.9);--sbg:rgba(240,160,96,.15);">🏁 End<span class="sr-time">22:30</span></button>
+      <div style="width:1px;height:22px;background:var(--border2);margin:0 4px;"></div>
+      <span id="sr-info" style="font-size:11px;font-family:monospace;color:var(--gold);">সব ক্যান্ডেল (73/73)</span>
+    </div>
+  </div>
+
+  <style>
+  .sess-range-btn{
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:6px 12px;border-radius:4px;border:1px solid rgba(255,255,255,.1);
+    background:var(--bg3);color:var(--dim);font-size:11px;font-weight:700;
+    cursor:pointer;transition:all .18s;white-space:nowrap;
+  }
+  .sess-range-btn:hover{border-color:var(--sc,rgba(201,168,76,.6));color:var(--text);}
+  .sess-range-btn.active{
+    background:var(--sbg,rgba(201,168,76,.15));
+    border-color:var(--sc,rgba(201,168,76,.8));
+    color:var(--text);
+    box-shadow:0 0 8px var(--sbg,rgba(201,168,76,.1));
+  }
+  .sr-time{font-size:9px;font-family:monospace;font-weight:400;color:inherit;opacity:.7;}
+  </style>
+
+  <!-- Historical Load Chart -->
+  <div class="chart-box" id="hist-load-chart-box" style="border-color:rgba(96,184,255,0.35);">
+    <div class="chart-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>📆 Weekly চার্ট</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span id="hist-load-chart-label" style="font-size:11px;color:#8DC4F0;font-family:monospace;">— কোনো ডাটা লোড হয়নি —</span>
+        <span style="font-size:11px;color:var(--dim);">Final: <span id="hl-current" style="font-family:monospace;font-weight:700;color:var(--gold);">—</span></span>
+        <button class="dtool" id="hist-live-compare-btn" onclick="toggleHistLiveCompare()" title="লাইভ ইনপুটের ডাটার সাথে তুলনা করুন">⚡ লাইভ তুলনা</button>
+      </div>
+    </div>
+    <div class="legend" id="hist-load-legend" style="margin-bottom:8px;"></div>
+    <div style="position:relative;height:380px;" id="hist-load-chart-wrap">
+      <canvas id="histLoadChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="zero-note">↑ শূন্যের উপরে = ব্যাংক ইনজেক্ট করছে (BUY) · শূন্যের নিচে = উইথড্র করছে (SELL)</div>
+  </div>
+
+</div>
+
+<!-- ========== PREVIEW TAB ========== -->
+<div id="tab-preview" class="panel">
+
+  <div style="font-size:11px;color:var(--dim);margin-bottom:14px;letter-spacing:.3px;">
+    🔭 তিনটি চার্ট Overview — মূল ট্যাবের ডাটা সম্পূর্ণ অক্ষত থাকবে
+  </div>
+
+  <!-- 1. Live Chart Preview -->
+  <div class="chart-box" style="margin-bottom:14px;border-color:rgba(201,168,76,0.35);">
+    <div class="chart-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>📋 Daily চার্ট</span>
+      <span id="pv-live-label" style="font-size:11px;color:var(--gold);font-family:monospace;">—</span>
+    </div>
+    <div style="position:relative;height:260px;">
+      <canvas id="pvLiveChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="zero-note">↑ শূন্যের উপরে = BUY · নিচে = SELL</div>
+  </div>
+
+  <!-- 2. Historical Chart Preview -->
+  <div class="chart-box" style="margin-bottom:14px;border-color:rgba(96,184,255,0.35);">
+    <div class="chart-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>📆 Weekly চার্ট</span>
+      <span id="pv-hist-label" style="font-size:11px;color:#8DC4F0;font-family:monospace;">— কোনো ডাটা লোড হয়নি —</span>
+    </div>
+    <div style="position:relative;height:260px;">
+      <canvas id="pvHistChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="zero-note">↑ শূন্যের উপরে = BUY · নিচে = SELL</div>
+  </div>
+
+  <!-- 3. Itihas Chart Preview -->
+  <div class="chart-box" style="border-color:rgba(155,137,212,0.35);">
+    <div class="chart-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>📅 Monthly চার্ট</span>
+      <span id="pv-itihas-label" style="font-size:11px;color:#BDB0E8;font-family:monospace;">সক্রিয় লাইন দেখাচ্ছে</span>
+    </div>
+    <div class="legend" id="pv-itihas-legend" style="margin-bottom:6px;"></div>
+    <div style="position:relative;height:260px;">
+      <canvas id="pvItihashChart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+    </div>
+    <div class="zero-note">↑ শূন্যের উপরে = BUY · নিচে = SELL</div>
+  </div>
+
+</div>
 
 
 <!-- ========== IMPORT TAB ========== -->
@@ -467,7 +639,7 @@ Apr_Mon_W4:'#D48060',Apr_Tue_W4:'#8060D4',Apr_Wed_W4:'#60D490',Apr_Thu_W4:'#D460
 Apr_Mon_W5:'#60C0D4',Apr_Tue_W5:'#D0D460',Apr_Wed_W5:'#D46060',Apr_Thu_W5:'#60D4D0',
 // May
 May_Fri_W1:'#F0C040',May_Mon_W2:'#40C0F0',May_Tue_W2:'#F040C0',May_Wed_W2:'#C0F040',May_Thu_W2:'#F07040',May_Fri_W2:'#40F070',
-May_Mon_W3:'#F040A0',May_Tue_W3:'#A040F0',May_Wed_W3:'#40F0A0',May_Thu_W3:'#F0A040',May_Fri_W3:'#A0F040'};
+May_Mon_W3:'#F040A0',May_Tue_W3:'#A040F0',May_Wed_W3:'#40F0A0',May_Thu_W3:'#F0A040',May_Fri_W3:'#A0F040',May_Mon_W4:'#FF6B6B',May_Tue_W4:'#6BFFB8',May_Wed_W4:'#6BB8FF',May_Thu_W4:'#FFD56B',May_Fri_W4:'#D56BFF'};
 const LABELS={Mon_W1:'সোম W১',Tue_W1:'মঙ্গল W১',Wed_W1:'বুধ W১',Thu_W1:'বৃহ W১',Fri_W1:'শুক্র W১',Mon_W2:'সোম W২',Tue_W2:'মঙ্গল W২',Wed_W2:'বুধ W২',Thu_W2:'বৃহ W২',Fri_W2:'শুক্র W২',Mon_W3:'সোম W৩',Tue_W3:'মঙ্গল W৩',Wed_W3:'বুধ W৩',Thu_W3:'বৃহ W৩',Fri_W3:'শুক্র W৩',Mon_W4:'সোম W৪',Tue_W4:'মঙ্গল W৪',Wed_W4:'বুধ W৪',Thu_W4:'বৃহ W৪',Fri_W4:'শুক্র W৪',Mar_Mon_W1:'মার্চ সোম W১',Mar_Tue_W1:'মার্চ মঙ্গল W১',Mar_Wed_W1:'মার্চ বুধ W১',Mar_Thu_W1:'মার্চ বৃহ W১',Mar_Fri_W1:'মার্চ শুক্র W১',Mar_Mon_W2:'মার্চ সোম W২',Mar_Tue_W2:'মার্চ মঙ্গল W২',Mar_Wed_W2:'মার্চ বুধ W২',Mar_Thu_W2:'মার্চ বৃহ W২',Mar_Fri_W2:'মার্চ শুক্র W২',Mar_Mon_W3:'মার্চ সোম W৩',Mar_Tue_W3:'মার্চ মঙ্গল W৩',Mar_Wed_W3:'মার্চ বুধ W৩',Mar_Thu_W3:'মার্চ বৃহ W৩',Mar_Fri_W3:'মার্চ শুক্র W৩',Mar_Mon_W4:'মার্চ সোম W৪',Mar_Tue_W4:'মার্চ মঙ্গল W৪',Mar_Wed_W4:'মার্চ বুধ W৪',Mar_Thu_W4:'মার্চ বৃহ W৪',Mar_Fri_W4:'মার্চ শুক্র W৪',Mar_Mon_W5:'মার্চ সোম W৫',Mar_Tue_W5:'মার্চ মঙ্গল W৫',
 Apr_Wed_W1:'এপ্রিল বুধ W১',Apr_Thu_W1:'এপ্রিল বৃহ W১',
 Apr_Mon_W2:'এপ্রিল সোম W২',Apr_Tue_W2:'এপ্রিল মঙ্গল W২',Apr_Wed_W2:'এপ্রিল বুধ W২',Apr_Thu_W2:'এপ্রিল বৃহ W২',Apr_Fri_W2:'এপ্রিল শুক্র W২',
@@ -476,7 +648,7 @@ Apr_Mon_W4:'এপ্রিল সোম W৪',Apr_Tue_W4:'এপ্রিল �
 Apr_Mon_W5:'এপ্রিল সোম W৫',Apr_Tue_W5:'এপ্রিল মঙ্গল W৫',Apr_Wed_W5:'এপ্রিল বুধ W৫',Apr_Thu_W5:'এপ্রিল বৃহ W৫',
 May_Fri_W1:'মে শুক্র W১',
 May_Mon_W2:'মে সোম W২',May_Tue_W2:'মে মঙ্গল W২',May_Wed_W2:'মে বুধ W২',May_Thu_W2:'মে বৃহ W২',May_Fri_W2:'মে শুক্র W২',
-May_Mon_W3:'মে সোম W৩',May_Tue_W3:'মে মঙ্গল W৩',May_Wed_W3:'মে বুধ W৩',May_Thu_W3:'মে বৃহ W৩',May_Fri_W3:'মে শুক্র W৩'};
+May_Mon_W3:'মে সোম W৩',May_Tue_W3:'মে মঙ্গল W৩',May_Wed_W3:'মে বুধ W৩',May_Thu_W3:'মে বৃহ W৩',May_Fri_W3:'মে শুক্র W৩',May_Mon_W4:'মে সোম W৪',May_Tue_W4:'মে মঙ্গল W৪',May_Wed_W4:'মে বুধ W৪',May_Thu_W4:'মে বৃহ W৪',May_Fri_W4:'মে শুক্র W৪'};
 const D={
 Apr_Fri_W1:[2.62, -0.09, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 Apr_Fri_W2:[-3.63, -6.85, -2.39, -3.92, -2.14, -0.16, -3.93, -0.57, 2.14, 4.75, 9.71, 13.88, 18.6, 14.05, 9.15, 5.13, 9.7, 13.62, 17.57, 13.76, 16.9, 19.39, 21.43, 23.39, 21.09, 19.07, 21.66, 24.11, 28.23, 31.58, 27.54, 23.44, 19.24, 14.86, 18.8, 22.35, 25.49, 22.25, 25.76, 22.2, 19.1, 23.52, 26.63, 31.67, 35.43, 38.72, 35.28, 38.79, 35.66, 38.49, 35.33, 38.24, 41.24, 44.65, 40.67, 36.43, 42.7, 47.44, 52.91, 57.78, 51.05, 56.94, 63.31, 69.66, 63.94, 57.58, 63.03, 57.91, 51.46, 45.77, 51.7, 46.89, 41.94],
@@ -536,27 +708,27 @@ Mar_Wed_W5:[-1.44, 0.08, -1.74, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 May_Fri_W1:[2.62, -0.09, 2.3, 4.19, 6.5, 3.6, -1.04, 3.24, -0.74, -4.62, -8.45, -11.56, -8.25, -5.29, -1.94, 1.35, -1.74, -5.09, -2.54, -0.1, 3.6, 6.17, 2.93, 0.41, -2.93, -5.91, -2.6, -0.05, -3.11, -6.58, -10.76, -14.66, -10.66, -5.39, -0.32, -4.74, -9.06, -13.26, -17.98, -22.61, -18.65, -22.28, -25.82, -22.34, -19.05, -22.87, -19.77, -16.97, -13.72, -16.79, -20.69, -16.66, -12.78, -8.92, -4.12, 2.77, -3.12, 1.89, 6.88, 1.91, 9.57, 17.1, 25.19, 17.5, 10.05, 17.07, 24.23, 30.28, 36.03, 42.04, 47.35, 41.6, 47.37],
 May_Fri_W2:[-3.63, -6.85, -3.86, -1.16, 1.57, 5.02, 10.08, 4.93, 9.6, 4.87, 11.52, 6.27, 0.44, 6.07, 11.64, 7.39, 1.15, 6.83, 11.52, 15.3, 19.63, 16.09, 12.32, 15.46, 11.81, 15.25, 18.7, 21.92, 27.39, 32.71, 26.05, 31.78, 26.41, 21.24, 15.81, 8.99, 14.25, 19.37, 24.4, 29.65, 33.98, 38.12, 42.25, 46.15, 41.75, 37.34, 40.93, 44.36, 48.17, 43.88, 48.76, 52.9, 49.05, 44.77, 39.04, 44.3, 52.17, 59.35, 51.9, 58.24, 66.45, 73.76, 65.49, 58.03, 65.7, 58.86, 52.07, 59.26, 52.63, 58.54, 63.96, 68.83, 63.95],
 May_Fri_W3:[2.12, 3.82, 1.47, 4.3, 0.29, -3.76, -9.72, -16.19, -23.0, -16.46, -25.18, -33.26, -25.6, -33.2, -26.27, -20.8, -14.54, -8.69, -3.16, -8.66, -4.08, -0.24, 3.72, -0.41, -4.49, -0.36, -6.44, -12.92, -21.46, -29.49, -21.14, -13.42, -20.32, -13.46, -6.11, -12.33, -17.72, -22.84, -29.23, -35.85, -28.93, -34.3, -41.09, -34.74, -40.65, -33.77, -27.02, -32.99, -27.52, -19.9, -13.19, -18.37, -23.84, -18.41, -24.51, -18.11, -24.63, -18.59, -10.92, -3.78, -13.01, -4.19, 4.45, 13.15, 21.34, 29.37, 21.8, 14.58, 7.09, 0.01, -6.83, -0.53, 5.69],
-May_Fri_W4:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+May_Fri_W4:[1.33, 2.66, 4.17, 2.47, 0.2, 2.85, -2.19, 2.37, 6.52, 2.13, 8.75, 3.57, -2.06, 3.27, 8.15, 4.68, -0.24, 4.02, -0.06, 3.78, 7.05, 9.41, 11.92, 14.7, 11.78, 9.68, 6.86, 9.76, 14.87, 9.19, 15.9, 21.82, 27.07, 22.23, 17.23, 21.07, 16.15, 20.28, 24.88, 30.33, 25.0, 20.99, 16.66, 21.24, 25.54, 29.39, 33.58, 29.6, 24.28, 28.47, 32.45, 28.53, 32.57, 27.95, 33.59, 26.84, 21.18, 26.32, 19.32, 13.77, 6.11, -1.17, -9.38, -0.9, 6.15, -0.27, 6.22, 12.04, 6.29, 11.81, 6.67, 11.21, 6.05],
 May_Fri_W5:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Mon_W1:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Mon_W2:[2.89, -0.09, -3.48, -0.8, -3.63, -0.5, -5.59, -10.48, -6.75, -3.0, -7.91, -12.08, -8.18, -4.79, -9.16, -13.63, -9.81, -6.14, -2.87, -0.03, -3.77, 1.81, -1.92, -5.12, -1.85, -4.73, -8.38, -13.54, -8.64, -4.58, 0.62, -3.9, -8.99, -4.6, 0.14, -3.89, 0.44, -3.86, 1.19, -3.49, 0.53, -3.32, 0.4, -2.9, 0.03, -3.45, -12.19, -4.03, 3.25, 8.75, 14.85, 9.87, 3.99, 9.31, 14.46, 20.91, 26.49, 21.34, 14.0, 8.44, 16.52, 23.98, 16.32, 23.76, 30.29, 23.53, 15.94, 6.63, 15.08, 7.06, -1.3, 6.95, 0.23],
 May_Mon_W3:[-3.46, -0.21, -3.45, -0.71, 1.89, -1.06, -6.18, -1.43, 3.19, -2.9, 5.18, 12.22, 5.49, -0.6, 5.67, 9.88, 15.48, 9.34, 14.39, 18.96, 14.77, 11.05, 15.26, 11.68, 15.44, 18.23, 21.7, 18.45, 12.49, 5.57, 11.87, 17.41, 22.38, 27.5, 22.56, 26.69, 22.77, 18.82, 23.81, 28.51, 32.76, 29.13, 32.66, 28.72, 33.45, 29.66, 33.56, 36.88, 40.5, 44.35, 48.87, 52.36, 56.95, 61.03, 56.33, 62.91, 69.25, 75.55, 83.19, 90.65, 98.75, 91.45, 84.05, 77.4, 84.72, 78.52, 84.44, 89.98, 84.76, 89.88, 85.64, 80.96, 75.37],
-May_Mon_W4:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+May_Mon_W4:[4.43, 1.06, -2.99, -6.93, -2.19, 3.25, -4.85, -12.01, -20.46, -12.45, -21.58, -12.87, -4.52, 3.49, 10.93, 5.1, 11.68, 5.33, -0.64, 5.31, 11.63, 6.21, 11.13, 6.01, 10.74, 6.08, 0.91, 6.58, -0.17, -5.95, 0.71, 7.06, 13.44, 19.27, 13.89, 19.39, 12.93, 7.3, 12.77, 17.62, 22.66, 27.26, 22.78, 18.93, 13.97, 18.17, 13.28, 17.1, 22.01, 17.81, 12.66, 7.96, 15.64, 8.47, 14.45, 8.34, 15.63, 22.88, 15.42, 21.36, 12.86, 21.28, 13.05, 5.07, -3.46, -11.19, -19.29, -26.07, -19.28, -13.05, -7.03, -13.64, -7.05],
 May_Mon_W5:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Thu_W1:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Thu_W2:[2.33, -0.15, 2.2, -0.5, 1.25, 4.3, 10.11, 4.95, 0.15, 4.68, 11.56, 5.24, 11.23, 16.5, 11.25, 6.64, 11.29, 15.11, 18.93, 15.47, 18.32, 15.55, 11.71, 14.96, 17.71, 14.78, 17.85, 14.54, 19.21, 14.89, 19.69, 25.0, 32.28, 27.12, 34.18, 27.46, 32.86, 38.16, 44.65, 38.96, 34.17, 29.32, 34.84, 39.47, 44.18, 39.01, 43.91, 39.7, 43.95, 40.05, 35.57, 40.56, 45.42, 50.83, 57.07, 50.69, 56.51, 62.2, 54.99, 60.97, 69.02, 60.96, 68.25, 75.48, 68.53, 75.01, 68.21, 60.58, 53.59, 45.75, 37.41, 45.65, 38.59],
 May_Thu_W3:[2.12, 3.88, 5.79, 4.08, 1.86, 4.24, 8.66, 13.07, 17.35, 21.01, 13.42, 19.78, 13.46, 19.88, 25.51, 29.37, 24.1, 18.23, 12.71, 17.79, 13.45, 9.5, 13.88, 18.24, 22.56, 19.33, 15.48, 12.13, 17.67, 12.31, 18.09, 23.22, 27.89, 33.68, 28.55, 33.35, 38.67, 33.27, 38.24, 42.94, 38.02, 33.68, 38.1, 34.17, 39.02, 43.58, 39.09, 43.6, 39.66, 44.16, 48.6, 44.63, 48.68, 53.83, 59.07, 63.92, 57.9, 62.96, 69.65, 62.76, 54.18, 62.52, 70.4, 77.57, 71.12, 63.94, 70.36, 76.0, 70.38, 75.33, 69.35, 64.23, 58.36],
-May_Thu_W4:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+May_Thu_W4:[2.29, -0.77, 1.64, -0.85, 1.39, 3.94, -1.7, -7.6, -3.67, 0.18, 7.37, 13.23, 19.3, 13.7, 8.28, 3.46, -2.25, -7.35, -2.93, -7.2, -10.53, -14.15, -11.28, -8.4, -11.14, -8.79, -12.8, -17.02, -11.15, -5.46, 0.09, 6.0, 0.14, -6.12, -12.0, -17.76, -13.29, -9.02, -3.04, 2.9, -2.3, 2.92, 8.19, 3.12, -1.72, 2.15, 6.78, 0.75, -7.32, -14.03, -7.71, -13.01, -17.85, -13.13, -7.73, -13.46, -6.42, -12.66, -20.46, -27.71, -36.26, -27.29, -35.36, -43.68, -51.17, -43.5, -35.35, -42.63, -36.41, -30.69, -23.83, -29.47, -24.52],
 May_Thu_W5:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Tue_W1:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Tue_W2:[1.62, -0.15, 1.81, 3.2, 1.77, 3.96, 7.94, 3.55, 6.76, 10.25, 14.81, 18.72, 23.32, 26.79, 23.44, 26.41, 29.49, 25.98, 28.73, 26.3, 23.7, 20.96, 18.69, 16.23, 18.85, 21.65, 25.62, 28.85, 33.66, 37.39, 32.46, 27.99, 32.81, 36.98, 42.03, 37.88, 43.06, 38.41, 43.21, 48.07, 43.44, 48.03, 52.95, 48.85, 52.81, 56.27, 52.63, 49.13, 44.69, 48.65, 53.55, 58.42, 63.29, 67.75, 74.36, 80.44, 75.51, 70.9, 77.04, 71.2, 63.77, 70.09, 63.26, 70.77, 64.35, 58.6, 53.0, 47.59, 42.03, 36.97, 31.99, 27.06, 22.01],
 May_Tue_W3:[2.16, 5.35, 8.45, 11.03, 14.52, 18.63, 24.06, 18.43, 13.98, 9.03, 1.87, -4.49, -11.24, -17.48, -11.56, -16.0, -10.07, -4.71, 0.33, -4.25, -0.82, -3.98, -0.8, 3.09, 5.94, 1.93, -2.79, 1.12, 7.03, 12.68, 6.27, 0.61, 6.02, -0.15, 6.03, 10.69, 15.13, 19.76, 24.61, 28.87, 24.37, 28.7, 24.52, 28.29, 23.42, 27.55, 31.33, 27.55, 22.32, 26.51, 20.58, 25.28, 29.89, 34.58, 29.54, 24.34, 31.66, 38.0, 30.76, 37.66, 45.86, 37.7, 45.69, 38.71, 46.3, 38.82, 31.14, 22.64, 29.83, 36.07, 41.79, 36.43, 42.01],
-May_Tue_W4:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+May_Tue_W4:[2.21, 0.57, 3.55, 5.99, 3.62, 1.11, -4.97, -10.72, -15.41, -19.72, -13.1, -19.21, -13.49, -18.93, -25.3, -20.3, -25.8, -30.53, -25.69, -29.43, -33.16, -36.66, -40.59, -37.06, -39.97, -36.78, -32.97, -37.97, -31.35, -25.07, -18.49, -12.04, -6.24, -11.12, -5.75, -10.58, -15.44, -9.74, -15.17, -20.4, -16.01, -20.0, -24.33, -19.38, -24.7, -20.51, -16.3, -19.68, -25.3, -19.32, -24.57, -20.24, -15.68, -20.61, -14.97, -9.99, -15.65, -10.79, -18.31, -26.44, -36.14, -26.82, -35.73, -44.43, -35.98, -43.84, -36.49, -29.68, -22.74, -16.66, -22.72, -17.3, -23.06],
 May_Tue_W5:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Wed_W1:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 May_Wed_W2:[2.14, 6.38, 11.61, 7.08, 10.71, 14.4, 8.79, 14.34, 18.96, 23.53, 17.25, 22.69, 28.06, 32.85, 37.13, 33.15, 37.84, 41.85, 46.02, 42.22, 45.93, 42.97, 46.06, 49.62, 44.89, 49.04, 52.84, 49.26, 54.13, 59.09, 53.36, 58.25, 53.16, 57.86, 53.25, 57.85, 62.22, 67.69, 62.13, 57.81, 62.04, 69.25, 62.0, 68.71, 62.63, 67.99, 62.3, 67.52, 73.98, 81.5, 74.46, 68.09, 61.43, 54.3, 46.46, 54.55, 61.43, 67.7, 75.8, 82.86, 91.58, 99.55, 107.8, 100.15, 107.62, 100.29, 93.54, 87.27, 81.26, 75.13, 68.94, 74.3, 79.67],
 May_Wed_W3:[2.82, 5.59, 8.98, 12.2, 15.63, 11.49, 17.19, 22.48, 17.55, 12.7, 6.19, 0.7, 6.26, 1.39, 5.89, 9.25, 4.28, -1.15, 3.61, 7.22, 10.38, 7.4, 10.22, 12.64, 9.99, 12.83, 16.48, 12.58, 18.17, 22.74, 27.79, 22.9, 27.69, 22.7, 27.92, 32.09, 28.55, 32.53, 28.07, 23.91, 27.47, 31.44, 27.35, 22.85, 27.24, 30.92, 35.79, 31.44, 27.34, 23.55, 28.18, 32.57, 37.38, 32.98, 28.44, 22.44, 17.7, 23.98, 30.44, 24.93, 16.74, 24.73, 32.47, 39.26, 46.02, 39.08, 45.48, 51.31, 57.38, 51.82, 57.13, 63.14, 57.73],
-May_Wed_W4:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+May_Wed_W4:[2.94, 5.64, 7.99, 10.51, 13.86, 10.74, 4.75, 11.71, 18.46, 12.94, 5.55, -1.14, -9.23, -1.88, 4.15, -1.24, -8.73, -2.41, -8.8, -3.61, 1.61, 5.55, 9.92, 5.92, 2.1, -1.71, 2.75, -1.73, 4.39, -1.14, -7.35, -0.69, -6.87, -0.73, 5.21, 10.22, 5.26, 0.75, 6.11, 11.47, 6.11, 11.33, 6.74, 2.43, 6.95, 10.92, 14.69, 18.15, 22.47, 26.51, 22.42, 26.14, 22.09, 26.83, 22.28, 27.4, 32.69, 28.1, 34.97, 28.87, 20.66, 12.91, 5.0, 14.67, 23.75, 32.02, 24.56, 33.6, 40.87, 34.0, 39.6, 33.24, 39.0],
 May_Wed_W5:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 Mon_W1:[2.84, 5.12, 11.07, -9.14, -3.02, -12.52, -2.72, 7.55, -2.71, -12.33, -21.83, -11.14, -0.23, 10.18, -0.52, 9.21, 18.98, 8.83, -1.46, 8.08, -2.5, -12.8, -2.21, 7.31, 16.61, 7.48, -2.09, -11.17, -21.98, -32.25, -42.6, -53.06, -63.62, -53.01, -43.46, -35.33, -27.67, -19.76, -11.08, -3.33, -10.98, -18.47, -10.24, -2.18, 6.46, 15.16, 22.55, 14.74, 7.42, 14.68, 21.62, 29.11, 36.19, 29.6, 22.17, 28.3, 34.25, 26.12, 16.02, 6.26, -3.62, 5.39, 14.52, 5.72, 16.13, 5.79, -4.23, -13.94, -24.23, -34.4, -24.09, -34.18, -43.64],
 Mon_W2:[1.66, 3.21, -3.52, 14.58, 21.29, 16.74, 11.02, 16.8, 12.0, 7.15, -0.59, -7.0, -14.04, -20.92, -14.07, -10.18, -16.54, -10.95, -5.87, -0.74, 3.32, 0.0, -3.02, 0.99, 3.83, 0.67, 3.52, 7.05, 13.87, 19.17, 12.6, 6.5, 12.9, 8.45, 3.98, -1.95, 2.44, -1.61, 2.69, 7.18, 10.7, 7.2, 3.09, 0.14, -3.02, -6.86, -2.65, -7.06, -12.2, -7.86, -4.17, -1.37, 1.72, 5.03, 8.79, 6.04, 9.31, 5.61, 12.25, 5.81, -0.5, 4.87, 10.12, 15.66, 24.54, 32.46, 25.63, 31.9, 38.22, 43.59, 49.12, 54.51, 59.82],
@@ -598,9 +770,8 @@ const RET={}; // RET[key] = [73 return values]
 })();
 
 // ====================== HIST TAB ======================
-let active=new Set(['Mon_W1']);
+let active=new Set();
 let histChart=null;
-let showHistManualCompare = false;
 
 function tog(k,btn){
   if(active.has(k)){active.delete(k);btn.classList.remove('on');}
@@ -619,8 +790,19 @@ function preset(p){
   });
   updateHist();
 }
-function updateHist(){updateHistChart();updateHistStats();updateLegend();}
+function updateHist(){updateHistChart();updateHistStats();updateLegend();if(document.getElementById('tab-preview')?.classList.contains('active')) syncPreviewCharts();}
 let showLiveCompare = false;
+let histSessCutoffIdx = 72;
+
+function setHistSessRange(key){
+  histSessCutoffIdx = SESS_RANGE[key];
+  const order = ['start','primary','quarter','semi','final','end'];
+  const pos = order.indexOf(key);
+  order.forEach((k,i) => document.getElementById('hsr-'+k)?.classList.toggle('active', i<=pos));
+  const info = document.getElementById('hsr-info');
+  if(info) info.textContent = `${histSessCutoffIdx+1}/73 ক্যান্ডেল → ${TIMES[histSessCutoffIdx]||''}`;
+  updateHistChart();
+}
 
 function toggleLiveCompare(){
   showLiveCompare = !showLiveCompare;
@@ -632,6 +814,8 @@ function toggleLiveCompare(){
   }
   updateHistChart();
   updateLegend();
+  if(document.getElementById('tab-preview')?.classList.contains('active')) syncPreviewCharts();
+  else { _pvItihashNeedsSync = true; }
 }
 
 function getLiveDataForCompare(){
@@ -649,66 +833,20 @@ function getLiveDataForCompare(){
   return hasData ? vals.map(v=>v===null?NaN:v) : null;
 }
 
-function toggleHistManualCompare(){
-  showHistManualCompare = !showHistManualCompare;
-  const btn = document.getElementById('hist-compare-btn');
-  if(btn){
-    btn.classList.toggle('active', showHistManualCompare);
-    btn.style.color = showHistManualCompare ? 'var(--gold)' : '';
-    btn.textContent = showHistManualCompare ? '⚡ ম্যানুয়াল তুলনা ✓' : '⚡ ম্যানুয়াল তুলনা';
-  }
-  if(histLoadChart){
-    // refresh manual overlay data on current historical chart
-    const liveVals = getLiveDataForCompare();
-    updateHistLoadCompareDataset(liveVals);
-  }
-}
-
-function updateHistLoadCompareDataset(liveVals){
-  if(!histLoadChart) return;
-  const hasLiveVals = showHistManualCompare && liveVals && liveVals.some(v=>!isNaN(v));
-  const existingIndex = histLoadChart.data.datasets.findIndex(ds => ds.label === '⚡ ম্যানুয়াল');
-  if(hasLiveVals){
-    const compareDataset = {
-      label:'⚡ ম্যানুয়াল',
-      data: liveVals,
-      borderColor:'#FFFFFF',
-      backgroundColor:'transparent',
-      borderWidth:2.5,
-      tension:.35,
-      pointRadius:0,
-      pointHoverRadius:5,
-      spanGaps:false,
-      segment:{borderColor:c=>{
-        const v = liveVals[c.p1DataIndex];
-        return (!v&&v!==0)||isNaN(v)?'#FFFFFF':v>=0?'#3DD68C':'#E05C5C';
-      }},
-      order:-1
-    };
-    if(existingIndex >= 0){
-      histLoadChart.data.datasets[existingIndex] = compareDataset;
-    } else {
-      // insert just after historical series, before baseline
-      const baseIndex = histLoadChart.data.datasets.findIndex(ds => ds.label==='');
-      const insertAt = baseIndex >= 0 ? baseIndex : histLoadChart.data.datasets.length;
-      histLoadChart.data.datasets.splice(insertAt, 0, compareDataset);
-    }
-  } else if(existingIndex >= 0){
-    histLoadChart.data.datasets.splice(existingIndex, 1);
-  }
-  histLoadChart.update('none');
-}
-
 function updateHistChart(){
-  const datasets=[...active].map(k=>({label:LABELS[k],data:D[k],borderColor:COLORS[k],backgroundColor:'transparent',borderWidth:active.size<=3?2:1.5,tension:.3,pointRadius:0,pointHoverRadius:4}));
+  const datasets=[...active].map(k=>{
+    const trimmed = D[k].map((v,i) => i <= histSessCutoffIdx ? v : NaN);
+    return {label:LABELS[k], data:trimmed, borderColor:COLORS[k], backgroundColor:'transparent', borderWidth:active.size<=3?2:1.5, tension:.3, pointRadius:0, pointHoverRadius:4, spanGaps:false};
+  });
 
   // Add live compare dataset if enabled
   if(showLiveCompare){
     const liveVals = getLiveDataForCompare();
     if(liveVals){
+      const trimmedLive = liveVals.map((v,i) => i <= histSessCutoffIdx ? v : NaN);
       datasets.push({
         label:'⚡ লাইভ',
-        data: liveVals,
+        data: trimmedLive,
         borderColor:'#FFFFFF',
         backgroundColor:'transparent',
         borderWidth: 2.5,
@@ -717,14 +855,13 @@ function updateHistChart(){
         pointRadius:0,
         pointHoverRadius:5,
         spanGaps:false,
-        // dashed white line — stands out from all colors
         segment:{
           borderColor: ctx2=>{
-            const v=liveVals[ctx2.p1DataIndex];
+            const v=trimmedLive[ctx2?.p1DataIndex];
             return(!v&&v!==0)||isNaN(v)?'#FFFFFF':v>=0?'#3DD68C':'#E05C5C';
           }
         },
-        order:-1  // draw on top
+        order:-1
       });
     }
   }
@@ -733,7 +870,7 @@ function updateHistChart(){
   const ctx=document.getElementById('histChart').getContext('2d');
   histChart=new Chart(ctx,{
     type:'line',
-    plugins:[tbePlugin],
+    plugins:[tbePlugin,chartBorderPlugin],
     data:{labels:TIMES,datasets},
     options:{
       responsive:true,maintainAspectRatio:false,
@@ -746,7 +883,7 @@ function updateHistChart(){
           titleColor:'#C9A84C',bodyColor:'#E8E0D0',
           callbacks:{
             title:items=>{
-              const t=TIMES[items[0].dataIndex];
+              const t=TIMES[items?.[0]?.dataIndex];
               const mk=TBE_MARKERS.find(x=>x.time===t);
               return mk?t+' · '+mk.label:t;
             },
@@ -755,8 +892,8 @@ function updateHistChart(){
         }
       },
       scales:{
-        x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:14,maxRotation:0},grid:{color:'rgba(255,255,255,.03)'}},
-        y:{ticks:{color:'#7A7060',font:{size:11}},grid:{color:'rgba(255,255,255,.05)'},border:{dash:[3,3]}}
+        x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:14,maxRotation:0},grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}},
+        y:{ticks:{color:'#7A7060',font:{size:11}},grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}}
       }
     }
   });
@@ -794,23 +931,10 @@ function updateHistStats(){
 }
 
 
-function buildSessTable(){
-  const tb=document.getElementById('sess-tbody');
-  ALL_KEYS.forEach(k=>{
-    const v=D[k];const f=v[72];
-    const fmt=x=>`<span style="color:${x>=0?'var(--green)':'var(--red)'};font-family:monospace;">${x>=0?'+':''}${x.toFixed(2)}</span>`;
-    const dir=f>=0?'<span style="color:var(--green);">▲ BUY</span>':'<span style="color:var(--red);">▼ SELL</span>';
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="color:${COLORS[k]};font-weight:700;">${LABELS[k]}</td><td>${fmt(v[TBE_IDX.primary])}</td><td>${fmt(v[TBE_IDX.quarter])}</td><td>${fmt(v[TBE_IDX.final])}</td><td>${fmt(f)}</td><td>${dir}</td>`;
-    tb.appendChild(tr);
-  });
-}
-
 // ====================== LIVE INPUT TAB ======================
 const sessRowClass=['asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','asia-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','london-row2','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','kz-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row','ny-row'];
 const sessBreaks={0:'▶ 3:30 Start → 7:00 Primary',11:'🎯 7:00 Primary → 14:30 Quarter',41:'📐 14:30 Quarter → 16:45 Semi',50:'⚡ 16:45 Semi → 19:00 Final',59:'🔔 19:00 Final → 22:30 End  (AORZ)'};
 let liveChart=null;
-let histLoadChart=null;
 
 function buildLiveTable(){
   const tb=document.getElementById('live-tbody');tb.innerHTML='';
@@ -843,19 +967,42 @@ function recalcLive(){
     }
   }
   const lastVal=restVals.filter(v=>v!==null).slice(-1)[0]||0;
-  const lcEl = document.getElementById('live-current');
-  if(lcEl){ lcEl.textContent=(lastVal>=0?'+':'')+lastVal.toFixed(2); lcEl.style.color=lastVal>=0?'var(--green)':'var(--red)'; }
+  document.getElementById('live-current').textContent=(lastVal>=0?'+':'')+lastVal.toFixed(2);
+  document.getElementById('live-current').style.color=lastVal>=0?'var(--green)':'var(--red)';
   updateLiveChart(restVals);
-  updateNextCandleProb(restVals, lastFilledIdx);
   updatePredChart(restVals, lastFilledIdx);
   checkSaveReady();
+  // If Historical tab's live-compare is on, refresh it too
+  if(showHistLiveCompare && histLoadChartInst){ updateHistLoadChartDatasets(); updateHistLoadLegend(); }
+  if(document.getElementById('tab-preview')?.classList.contains('active')) syncPreviewCharts();
 
-  if(showHistManualCompare && histLoadChart){
-    const liveVals = getLiveDataForCompare();
-    updateHistLoadCompareDataset(liveVals);
+  // Add to historical D[] so it appears in History tab
+  const _today = new Date();
+  const _todayKey = 'Live_' + _today.toISOString().slice(0,10);
+  if(restVals.some(v=>v!==null)){
+    const _filled = restVals.map(v=>v===null?0:v);
+    D[_todayKey] = _filled;
+    if(!COLORS[_todayKey]) COLORS[_todayKey] = '#FFFFFF';
+    if(!LABELS[_todayKey]) LABELS[_todayKey] = '⚡ লাইভ (' + _today.toLocaleDateString('bn-BD') + ')';
+    // Update hist chart if live-compare is on
+    if(showLiveCompare && histChart){
+      histChart.data.datasets = histChart.data.datasets.filter(d=>d.label!=='⚡ লাইভ');
+      histChart.data.datasets.push({
+        label:'⚡ লাইভ',
+        data:_filled,
+        borderColor:'#FFFFFF',
+        backgroundColor:'transparent',
+        borderWidth:2.5,
+        tension:.35,
+        pointRadius:0,
+        pointHoverRadius:5,
+        spanGaps:true,
+        segment:{borderColor:c=>{const v=_filled[c?.p1DataIndex];return v>=0?'#3DD68C':'#E05C5C';}},
+        order:-1
+      });
+      histChart.update('none');
+    }
   }
-
-  // Manual input stays separate; do not copy live input values into historical datasets.
 
   // Auto-save to Supabase (debounced 5s after last input)
   clearTimeout(window._supaTimer);
@@ -888,6 +1035,55 @@ function getPartZone(v){ return PART_ZONES.find(z=>v>=z.min&&v<z.max)||null; }
 let showPartZones=false;
 
 // TBE marker plugin — uses beforeDraw (not afterDraw) to avoid tooltip redraw loop
+// Draw full border (top+right+bottom+left) around every chart area
+const chartBorderPlugin = {
+  id: 'chartBorder',
+  afterDraw(chart) {
+    const { ctx, chartArea: { left, right, top, bottom } } = chart;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(left, top, right - left, bottom - top);
+    ctx.restore();
+  }
+};
+
+// Lightweight session marker plugin for preview charts
+const pvMarkersPlugin = {
+  id: 'pvMarkers',
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea: { left, right, top, bottom }, scales: { x } } = chart;
+    if(!x) return;
+    const markers = [
+      { time:'3:30',  label:'Start',   color:'rgba(90,156,212,0.7)',  dash:[] },
+      { time:'7:00',  label:'Primary', color:'rgba(201,168,76,0.7)',  dash:[4,3] },
+      { time:'14:30', label:'Quarter', color:'rgba(61,214,140,0.7)',  dash:[4,3] },
+      { time:'16:45', label:'Semi',    color:'rgba(155,137,212,0.7)', dash:[4,3] },
+      { time:'19:00', label:'Final',   color:'rgba(224,82,82,0.7)',   dash:[4,3] },
+      { time:'22:30', label:'End',     color:'rgba(240,160,96,0.7)',  dash:[] },
+    ];
+    ctx.save();
+    markers.forEach(m => {
+      const i = TIMES.indexOf(m.time);
+      if(i < 0) return;
+      const px = x.getPixelForValue(i);
+      if(px < left || px > right) return;
+      ctx.beginPath();
+      ctx.setLineDash(m.dash);
+      ctx.strokeStyle = m.color;
+      ctx.lineWidth = 1;
+      ctx.moveTo(px, top);
+      ctx.lineTo(px, bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = m.color;
+      ctx.font = '9px monospace';
+      ctx.fillText(m.label, px + 3, top + 10);
+    });
+    ctx.restore();
+  }
+};
+
 const tbePlugin={
   id:'tbe',
   beforeDatasetsDraw(chart){
@@ -999,23 +1195,23 @@ function updateLiveChart(restVals){
   if(liveChart){
     liveChart.data.datasets[0].data=[..._liveFilledData];
     liveChart.update('none');
-    setTimeout(initDrawCanvases, 50);
+    setTimeout(initDrawCanvas, 50);
     // Reload drawings with updated pixel positions after scale change
-    setTimeout(loadCurrentDrawings, 80);
+    setTimeout(loadDrawings, 80);
     return;
   }
 
   const ctx=document.getElementById('liveChart').getContext('2d');
   liveChart=new Chart(ctx,{
     type:'line',
-    plugins:[tbePlugin],
+    plugins:[tbePlugin,chartBorderPlugin],
     data:{labels:TIMES,datasets:[
       {label:'রেস্ট',
        data:[..._liveFilledData],
        borderColor:'#C9A84C',
        // Segment uses global ref — always current
        segment:{borderColor:c=>{
-         const v=_liveFilledData[c.p1DataIndex];
+         const v=_liveFilledData[c?.p1DataIndex];
          return(!v&&v!==0)||isNaN(v)?'#C9A84C':v>=0?'#3DD68C':'#E05C5C';
        }},
        backgroundColor:'rgba(201,168,76,0.06)',
@@ -1047,14 +1243,14 @@ function updateLiveChart(restVals){
           filter:i=>i.datasetIndex===0&&!isNaN(i.parsed.y),
           callbacks:{
             title:items=>{
-              const t=TIMES[items[0].dataIndex];
+              const t=TIMES[items?.[0]?.dataIndex];
               const mk=TBE_MARKERS.find(x=>x.time===t);
               return mk?t+' · '+mk.label:t;
             },
             label:c=>{
               if(c.datasetIndex!==0) return null;
-              const inv=parseFloat(document.getElementById('inv-'+c.dataIndex)?.value)||0;
-              const ret=parseFloat(document.getElementById('ret-'+c.dataIndex)?.value)||0;
+              const inv=parseFloat(document.getElementById('inv-'+c?.dataIndex)?.value)||0;
+              const ret=parseFloat(document.getElementById('ret-'+c?.dataIndex)?.value)||0;
               const mv=Math.max(inv,ret);
               const z=getPartZone(mv);
               let txt='Rest: '+(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2);
@@ -1066,39 +1262,182 @@ function updateLiveChart(restVals){
       },
       scales:{
         x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0},
-           grid:{color:'rgba(255,255,255,.03)'}},
+           grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}},
         y:{ticks:{color:'#7A7060',font:{size:10}},
-           grid:{color:'rgba(255,255,255,.05)'},
+           grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'},
            border:{dash:[3,3]}}
       }
     }
   });
-  setTimeout(()=>{ initDrawCanvases(); setTimeout(loadCurrentDrawings,200); }, 100);
+  setTimeout(()=>{ initDrawCanvas(); setTimeout(loadDrawings,200); }, 100);
 }
-
-function updateHistLoadChart(restVals){
-  const data = restVals.map(v=>v!==null?v:NaN);
-  if(histLoadChart){
-    histLoadChart.data.datasets[0].data=[...data];
-    const liveVals = getLiveDataForCompare();
-    updateHistLoadCompareDataset(liveVals);
-    return;
-  }
-  const ctx = document.getElementById('histLoadChart').getContext('2d');
-  histLoadChart = new Chart(ctx,{type:'line',plugins:[tbePlugin],data:{labels:TIMES,datasets:[
-    {label:'Historical Load',data:[...data],borderColor:'#60B8FF',segment:{borderColor:c=>{
-      const v=data[c.p1DataIndex];
-      return(!v&&v!==0)||isNaN(v)?'#60B8FF':v>=0?'#3DD68C':'#E05C5C';
-    }},backgroundColor:'rgba(96,184,255,0.08)',fill:'origin',borderWidth:2,tension:.35,pointRadius:0,pointHoverRadius:4,spanGaps:false},
-    {data:new Array(73).fill(0),borderColor:'rgba(255,255,255,0.08)',borderWidth:1,pointRadius:0,tension:0}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'nearest',intersect:false,axis:'x'},animation:false,plugins:{legend:{display:false},tooltip:{enabled:true,backgroundColor:'#1A2332',borderColor:'rgba(96,184,255,.3)',borderWidth:1,filter:i=>i.datasetIndex===0&&!isNaN(i.parsed.y),callbacks:{title:items=>{const t=TIMES[items[0].dataIndex];const mk=TBE_MARKERS.find(x=>x.time===t);return mk?t+' · '+mk.label:t;},label:c=>{if(c.datasetIndex!==0) return null;const v=c.parsed.y;return 'Rest: '+(v>=0?'+':'')+v.toFixed(2);}}}},scales:{x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0},grid:{color:'rgba(255,255,255,.03)'}},y:{ticks:{color:'#7A7060',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'},border:{dash:[3,3]}}}}});
-  try{ window.histLoadChart = histLoadChart; const cv=document.getElementById('histLoadChart'); if(cv) cv._chart = histLoadChart; }catch(e){console.warn('unable to expose histLoadChart to window',e);} 
-  setTimeout(()=>{ initDrawCanvases(); setTimeout(loadCurrentDrawings,200); }, 80);
-}
-// Expose for external calls and to avoid scope issues when invoking early
-try{ window.updateHistLoadChart = updateHistLoadChart; }catch(e){}
 
 let predChart = null;
+
+// ---- HIST LOAD CHART (separate, independent) ----
+let histLoadChartInst = null;
+let _histLoadEntries = []; // [{key, data, label, color}]
+let showHistLiveCompare = false;
+let histLoadCutoffIdx = 72;
+
+// Session range name → candle index map
+const SESS_RANGE = { start:0, primary:10, quarter:40, semi:49, final:58, end:72 };
+
+function setSessRange(key){
+  histLoadCutoffIdx = SESS_RANGE[key];
+
+  // Update button active states — highlight all up to & including clicked
+  const order = ['start','primary','quarter','semi','final','end'];
+  const clickedPos = order.indexOf(key);
+  order.forEach((k, i) => {
+    const btn = document.getElementById('sr-'+k);
+    if(btn) btn.classList.toggle('active', i <= clickedPos);
+  });
+
+  // Update info label
+  const info = document.getElementById('sr-info');
+  if(info){
+    const candleCount = histLoadCutoffIdx + 1;
+    const timeLabel = TIMES[histLoadCutoffIdx] || '';
+    info.textContent = `${candleCount}/73 ক্যান্ডেল → ${timeLabel}`;
+  }
+
+  // Refresh chart with trimmed data
+  updateHistLoadChartDatasets();
+  updateHistLoadLegend();
+}
+
+// ---- Historical Load chip selector (multi-select like ইতিহাস tab) ----
+function hlToggle(el, groupId){
+  el.classList.toggle('on');
+}
+
+function hlGetVals(groupId){
+  return [...(document.getElementById(groupId)?.querySelectorAll('.fchip.on') || [])]
+    .map(c => c.dataset.val);
+}
+
+function toggleHistLiveCompare(){
+  showHistLiveCompare = !showHistLiveCompare;
+  const btn = document.getElementById('hist-live-compare-btn');
+  if(btn){
+    btn.classList.toggle('active', showHistLiveCompare);
+    btn.textContent = showHistLiveCompare ? '⚡ লাইভ তুলনা ✓' : '⚡ লাইভ তুলনা';
+    btn.style.color = showHistLiveCompare ? 'var(--gold)' : '';
+  }
+  // Refresh with/without live overlay
+  updateHistLoadChartDatasets();
+  updateHistLoadLegend();
+  if(document.getElementById('tab-preview')?.classList.contains('active')) syncPreviewCharts();
+  else { _pvHistNeedsSync = true; }
+}
+
+function updateHistLoadLegend(){
+  const leg = document.getElementById('hist-load-legend');
+  if(!leg) return;
+  leg.innerHTML = _histLoadEntries.map(e => {
+    const lastV = e.data.filter(v=>!isNaN(v)).slice(-1)[0] ?? 0;
+    return `<div class="leg">
+      <span class="leg-line" style="background:${e.color};"></span>
+      <span style="color:${e.color};">${e.label}</span>
+      <span style="font-family:monospace;color:${lastV>=0?'var(--green)':'var(--red)'};margin-left:4px;">${lastV>=0?'+':''}${lastV.toFixed(2)}</span>
+    </div>`;
+  }).join('') + (showHistLiveCompare ? (() => {
+    const lv = getLiveDataForCompare(); if(!lv) return '';
+    const ll = lv.filter(v=>!isNaN(v)).slice(-1)[0] ?? 0;
+    return `<div class="leg"><span class="leg-line" style="background:#fff;box-shadow:0 0 4px #fff;"></span><span>⚡ লাইভ</span><span style="font-family:monospace;color:${ll>=0?'var(--green)':'var(--red)'};margin-left:4px;">${ll>=0?'+':''}${ll.toFixed(2)}</span></div>`;
+  })() : '');
+}
+
+function updateHistLoadChartDatasets(){
+  if(!histLoadChartInst) return;
+  const liveVals = showHistLiveCompare ? getLiveDataForCompare() : null;
+
+  const datasets = _histLoadEntries.map(e => {
+    const trimmed = e.data.map((v, i) => i <= histLoadCutoffIdx ? v : NaN);
+    return { label: e.label, data: trimmed, borderColor: e.color,
+      backgroundColor: 'transparent', fill: false,
+      borderWidth: _histLoadEntries.length <= 3 ? 2 : 1.5,
+      tension: .35, pointRadius: 0, pointHoverRadius: 4, spanGaps: false,
+      segment: { borderColor: c => { const v = trimmed[c?.p1DataIndex]; return (!v&&v!==0)||isNaN(v) ? e.color : v>=0 ? '#3DD68C' : '#E05C5C'; }}
+    };
+  });
+
+  if(liveVals){
+    const tl = liveVals.map((v,i) => i <= histLoadCutoffIdx ? v : NaN);
+    datasets.push({ label:'⚡ লাইভ', data: tl, borderColor:'#FFFFFF',
+      backgroundColor:'transparent', fill:false, borderWidth:2.5,
+      tension:.35, pointRadius:0, pointHoverRadius:5, spanGaps:false, order:-1,
+      segment:{ borderColor: c=>{ const v=tl[c?.p1DataIndex]; return (!v&&v!==0)||isNaN(v)?'#FFFFFF':v>=0?'#3DD68C':'#E05C5C'; }}
+    });
+  }
+
+  datasets.push({ label:'__zero__', data: new Array(73).fill(0), borderColor:'rgba(255,255,255,0.08)', borderWidth:1, pointRadius:0 });
+  histLoadChartInst.data.datasets = datasets;
+  histLoadChartInst.update('none');
+}
+
+function updateHistLoadChart(entries){
+  _histLoadEntries = entries;
+  histLoadCutoffIdx = 72;
+  setSessRange('end');
+
+  const lbl = document.getElementById('hist-load-chart-label');
+  if(lbl) lbl.textContent = entries.length ? entries.map(e=>e.label).join(', ') : '— কোনো ডাটা লোড হয়নি —';
+
+  if(histLoadChartInst){
+    updateHistLoadChartDatasets();
+    updateHistLoadLegend();
+    if(document.getElementById('tab-preview')?.classList.contains('active')) syncPreviewCharts();
+    return;
+  }
+
+  const ctx = document.getElementById('histLoadChart')?.getContext('2d');
+  if(!ctx) return;
+  histLoadChartInst = new Chart(ctx, {
+    type: 'line',
+    plugins: [tbePlugin, chartBorderPlugin],
+    data: { labels: TIMES, datasets: [] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false }, animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true, backgroundColor: '#1A2332',
+          borderColor: 'rgba(96,184,255,.3)', borderWidth: 1,
+          titleColor: '#8DC4F0', bodyColor: '#CDD6E0',
+          filter: i => { const ds=histLoadChartInst?.data?.datasets?.[i.datasetIndex]; return ds&&ds.label!=='__zero__'&&!isNaN(i.parsed.y); },
+          callbacks: {
+            title: items => { const t=TIMES[items?.[0]?.dataIndex]; const mk=TBE_MARKERS.find(x=>x.time===t); return mk?t+' · '+mk.label:t; },
+            label: c => { const ds=histLoadChartInst?.data?.datasets?.[c.datasetIndex]; if(!ds||ds.label==='__zero__') return null; return `${ds.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(2)}`; }
+          }
+        }
+      },
+      scales: {
+        x: { ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0}, grid:{display:false}, border:{display:true,color:'rgba(255,255,255,0.15)'} },
+        y: { ticks:{color:'#7A7060',font:{size:10}}, grid:{display:false}, border:{display:true,color:'rgba(255,255,255,0.15)'} }
+      }
+    }
+  });
+  updateHistLoadChartDatasets();
+  updateHistLoadLegend();
+  if(document.getElementById('tab-preview')?.classList.contains('active')) syncPreviewCharts();
+}
+
+function clearHistLoadChart(){
+  _histLoadEntries = [];
+  histLoadCutoffIdx = 72;
+  const lbl = document.getElementById('hist-load-chart-label');
+  if(lbl) lbl.textContent = '— কোনো ডাটা লোড হয়নি —';
+  const info = document.getElementById('sr-info');
+  if(info) info.textContent = 'সব ক্যান্ডেল (73/73)';
+  ['start','primary','quarter','semi','final'].forEach(k=>document.getElementById('sr-'+k)?.classList.remove('active'));
+  document.getElementById('sr-end')?.classList.add('active');
+  const leg = document.getElementById('hist-load-legend');
+  if(leg) leg.innerHTML = '';
+  if(histLoadChartInst){ histLoadChartInst.data.datasets=[]; histLoadChartInst.update('none'); }
+}
 
 function updatePredChart(restVals, lastIdx) {
   const overlay = document.getElementById('pred-overlay');
@@ -1232,152 +1571,411 @@ function updatePredChart(restVals, lastIdx) {
   }
 }
 
-function updateNextCandleProb(restVals, lastIdx){
-  const timeEl=document.getElementById('next-candle-time');
-  const display=document.getElementById('next-prob-display');
-  const basisEl=document.getElementById('prob-basis-lbl');
-
-  // If UI elements are removed, skip rendering but still compute silently
-  const safeSetText = (el, txt) => { if(el) el.textContent = txt; };
-  const safeSetHTML = (el, html) => { if(el) el.innerHTML = html; };
-
-  if(lastIdx<0){
-    safeSetText(timeEl, '');
-    safeSetText(basisEl, '');
-    safeSetHTML(display,'<div style="color:var(--dim);font-size:11px;font-style:italic;padding:8px 0;">প্রথম ক্যান্ডেলের ডাটা দিন...</div>');
-    return;
-  }
-
-  const nextIdx = lastIdx+1;
-  if(nextIdx>=73){
-    safeSetText(timeEl,'শেষ ক্যান্ডেল');
-    safeSetHTML(display,'<div style="color:var(--green);font-weight:700;padding:8px 0;">✓ সব ক্যান্ডেল সম্পন্ন</div>');
-    return;
-  }
-
-  safeSetText(timeEl, TIMES[nextIdx]);
-
-  // For each historical day, get the rest value at lastIdx, then check if next candle
-  // rest[nextIdx] > rest[lastIdx] (invest dominant) or < (return dominant)
-  // rest change = D[k][nextIdx] - D[k][lastIdx]
-  // positive change = invest > return (bank adding more)
-  // negative change = return > invest (bank withdrawing)
-
-  const currentCum = restVals[lastIdx];
-  const days = ALL_KEYS;
-  let investDom=0, returnDom=0, total=0;
-  let investSumChange=0, returnSumChange=0;
-
-  // Find historical days where at candle lastIdx the cumulative was in same direction
-  const currentDir = currentCum >= 0 ? 'pos' : 'neg';
-
-  days.forEach(k=>{
-    const histAtLast = D[k][lastIdx];
-    const histAtNext = D[k][nextIdx];
-    if(histAtLast===undefined||histAtNext===undefined) return;
-    // Match direction context
-    const histDir = histAtLast >= 0 ? 'pos' : 'neg';
-    if(histDir !== currentDir) return; // only same-direction context
-    total++;
-    const change = histAtNext - histAtLast;
-    if(change > 0){ investDom++; investSumChange+=change; }
-    else if(change < 0){ returnDom++; returnSumChange+=Math.abs(change); }
-  });
-
-  // Also compute across ALL days (no direction filter) for fallback
-  let totalAll=0, invAll=0, retAll=0;
-  days.forEach(k=>{
-    const a=D[k][lastIdx], b=D[k][nextIdx];
-    if(a===undefined||b===undefined) return;
-    totalAll++;
-    if(b-a>0) invAll++; else if(b-a<0) retAll++;
-  });
-
-  const useTotal = total >= 3 ? total : totalAll;
-  const useInv   = total >= 3 ? investDom : invAll;
-  const useRet   = total >= 3 ? returnDom : retAll;
-  const contextLabel = total >= 3
-    ? `${total} দিন (একই দিকনির্দেশ)`
-    : `${totalAll} দিন (সব ডাটা)`;
-
-  const invPct = useTotal>0 ? Math.round(useInv/useTotal*100) : 50;
-  const retPct = useTotal>0 ? Math.round(useRet/useTotal*100) : 50;
-  const neutralPct = 100-invPct-retPct;
-
-  // Expected change magnitude
-  const avgInvChg = investDom>0?(investSumChange/investDom).toFixed(2):'—';
-  const avgRetChg = returnDom>0?(returnSumChange/returnDom).toFixed(2):'—';
-
-  const dominant = invPct >= retPct ? 'invest' : 'return';
-  const confidence = Math.abs(invPct-retPct);
-  const confLabel = confidence>=40?'শক্তিশালী':confidence>=20?'মধ্যম':'দুর্বল';
-  const confColor = confidence>=40?'var(--green)':confidence>=20?'var(--gold)':'var(--red)';
-
-  basisEl.textContent = contextLabel+' থেকে বিশ্লেষণ';
-
-  display.innerHTML = `
-    <div style="margin-bottom:10px;">
-      <!-- Big signal -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;background:rgba(255,255,255,.03);border-radius:4px;border-left:3px solid ${dominant==='invest'?'#5A9CD4':'#E05C5C'};">
-        <div style="font-size:22px;">${dominant==='invest'?'📈':'📉'}</div>
-        <div>
-          <div style="font-size:13px;font-weight:700;color:${dominant==='invest'?'#8DC4F0':'#F08080'};">
-            ${dominant==='invest'?'Invest বেশি হওয়ার সম্ভাবনা':'Return বেশি হওয়ার সম্ভাবনা'}
-          </div>
-          <div style="font-size:11px;color:${confColor};margin-top:2px;">${confLabel} সংকেত · ${confidence}% ব্যবধান</div>
-        </div>
-      </div>
-
-      <!-- Bars -->
-      <div style="margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;font-family:monospace;">
-          <span style="color:#8DC4F0;">📥 Invest > Return</span>
-          <span style="color:#8DC4F0;font-weight:700;">${invPct}%</span>
-        </div>
-        <div style="height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;">
-          <div style="height:100%;width:${invPct}%;background:linear-gradient(90deg,#5A9CD4,#8DC4F0);border-radius:5px;transition:width .4s;"></div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;font-family:monospace;">
-          <span style="color:#F08080;">📤 Return > Invest</span>
-          <span style="color:#F08080;font-weight:700;">${retPct}%</span>
-        </div>
-        <div style="height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;">
-          <div style="height:100%;width:${retPct}%;background:linear-gradient(90deg,#E05C5C,#F08080);border-radius:5px;transition:width .4s;"></div>
-        </div>
-      </div>
-
-      ${neutralPct>0?`<div style="font-size:10px;color:var(--dim);margin-bottom:6px;font-family:monospace;">⟷ সমান: ${neutralPct}%</div>`:''}
-
-      <!-- Expected magnitude -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;font-size:10px;">
-        <div style="background:rgba(90,156,212,.08);padding:6px 8px;border-radius:3px;text-align:center;">
-          <div style="color:var(--dim);">গড় Invest বৃদ্ধি</div>
-          <div style="color:#8DC4F0;font-family:monospace;font-weight:700;font-size:12px;">+${avgInvChg}</div>
-        </div>
-        <div style="background:rgba(224,92,92,.08);padding:6px 8px;border-radius:3px;text-align:center;">
-          <div style="color:var(--dim);">গড় Return বৃদ্ধি</div>
-          <div style="color:#F08080;font-family:monospace;font-weight:700;font-size:12px;">-${avgRetChg}</div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 function resetLive(){
   for(let i=0;i<73;i++){
     const inv=document.getElementById(`inv-${i}`);const ret=document.getElementById(`ret-${i}`);
     if(inv)inv.value='';if(ret)ret.value='';
     const cell=document.getElementById(`rest-${i}`);if(cell){cell.textContent='0.00';cell.className='rest-cell rest-zero';}
   }
-  const lc = document.getElementById('live-current'); if(lc){ lc.textContent='0.00'; lc.style.color='var(--gold)'; }
+  document.getElementById('live-current').textContent='0.00';
+  document.getElementById('live-current').style.color='var(--gold)';
   if(liveChart){liveChart.data.datasets[0].data=new Array(73).fill(NaN);liveChart.update('none');}
-  document.getElementById('live-sess-summary').innerHTML='';
 }
 
-// ====================== PROBABILITY TAB ======================
+// ====================== PREVIEW TAB — 3 charts together ======================
+let pvLiveInst = null, pvHistInst = null, pvItihashInst = null;
+
+function _makePvChart(canvasId, data, color, segFn){
+  const ctx = document.getElementById(canvasId)?.getContext('2d');
+  if(!ctx) return null;
+  return new Chart(ctx, {
+    type: 'line',
+    plugins: [chartBorderPlugin, pvMarkersPlugin],
+    data: { labels: TIMES, datasets: [
+      { data: [...data],
+        borderColor: color,
+        segment: { borderColor: segFn },
+        backgroundColor: color.replace(')',',0.06)').replace('rgb','rgba'),
+        fill: false, backgroundColor: 'transparent', borderWidth: 2, tension: .35,
+        pointRadius: 0, pointHoverRadius: 4, spanGaps: false },
+      { data: new Array(73).fill(0),
+        borderColor: 'rgba(255,255,255,0.08)', borderWidth: 1, pointRadius: 0 }
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1A2332', borderColor: 'rgba(255,255,255,.12)', borderWidth: 1,
+          titleColor: '#8DC4F0', bodyColor: '#CDD6E0',
+          filter: i => i.datasetIndex === 0 && !isNaN(i.parsed.y),
+          callbacks: {
+            title: items => { const t=TIMES[items?.[0]?.dataIndex]; const mk=TBE_MARKERS.find(x=>x.time===t); return mk?t+' · '+mk.label:t; },
+            label: c => (c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2)
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color:'#7A7060', font:{size:9}, maxTicksLimit:12, maxRotation:0 }, grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'} },
+        y: { ticks: { color:'#7A7060', font:{size:10} }, grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}, border:{dash:[3,3]} }
+      }
+    }
+  });
+}
+
+function syncPreviewCharts(){
+  const liveCompareVals = getLiveDataForCompare();
+  const liveLine = liveVals => liveVals ? {
+    label: '⚡ লাইভ', data: liveVals,
+    borderColor: '#FFFFFF', backgroundColor: 'transparent',
+    borderWidth: 2, tension: .35, pointRadius: 0, pointHoverRadius: 4,
+    spanGaps: false, order: -1,
+    segment: { borderColor: c => { const v=liveVals[c?.p1DataIndex]; return (!v&&v!==0)||isNaN(v)?'#FFFFFF':v>=0?'#3DD68C':'#E05C5C'; }}
+  } : null;
+
+  // ---- 1. LIVE chart ----
+  const liveData = _liveFilledData.length ? _liveFilledData : new Array(73).fill(NaN);
+  const lastLive  = liveData.filter(v=>!isNaN(v)).slice(-1)[0];
+  const pvLiveLbl = document.getElementById('pv-live-label');
+  if(pvLiveLbl) pvLiveLbl.textContent = lastLive!==undefined ? (lastLive>=0?'Final: +':'Final: ')+lastLive.toFixed(2) : '— ডাটা নেই —';
+
+  if(!pvLiveInst){
+    pvLiveInst = _makePvChart('pvLiveChart', liveData, '#E8C97A',
+      c=>{ const v=liveData[c?.p1DataIndex]; return (!v&&v!==0)||isNaN(v)?'#E8C97A':v>=0?'#3DD68C':'#E05C5C'; });
+  } else {
+    pvLiveInst.data.datasets[0].data = [...liveData];
+    pvLiveInst.update('none');
+  }
+
+  // ---- 2. HISTORICAL chart + live compare ----
+  const histCutTrimmedLive = showHistLiveCompare && liveCompareVals
+    ? liveCompareVals.map((v,i)=>i<=histLoadCutoffIdx?v:NaN) : null;
+
+  const pvHistLbl = document.getElementById('pv-hist-label');
+  const histTabLbl = document.getElementById('hist-load-chart-label')?.textContent || '—';
+  if(pvHistLbl) pvHistLbl.textContent = _histLoadEntries.length
+    ? histTabLbl + (showHistLiveCompare && liveCompareVals ? ' ⚡' : '')
+    : '— কোনো ডাটা লোড হয়নি —';
+
+  const pvHistDatasets = _histLoadEntries.map(e => {
+    const trimmed = e.data.map((v,i)=>i<=histLoadCutoffIdx?v:NaN);
+    return { label: e.label, data: trimmed, borderColor: e.color,
+      backgroundColor:'transparent', fill:false,
+      borderWidth: _histLoadEntries.length<=3?2:1.5,
+      tension:.35, pointRadius:0, pointHoverRadius:4, spanGaps:false,
+      segment:{ borderColor: c=>{ const v=trimmed[c?.p1DataIndex]; return (!v&&v!==0)||isNaN(v)?e.color:v>=0?'#3DD68C':'#E05C5C'; }}
+    };
+  });
+  if(histCutTrimmedLive) pvHistDatasets.push(liveLine(histCutTrimmedLive));
+  pvHistDatasets.push({ label:'__zero__', data: new Array(73).fill(0), borderColor:'rgba(255,255,255,0.08)', borderWidth:1, pointRadius:0 });
+
+  if(!pvHistInst){
+    const ctx2 = document.getElementById('pvHistChart')?.getContext('2d');
+    if(ctx2) pvHistInst = new Chart(ctx2, {
+      type:'line', plugins:[chartBorderPlugin,pvMarkersPlugin],
+      data:{ labels:TIMES, datasets: pvHistDatasets },
+      options:{
+        responsive:true, maintainAspectRatio:false, animation:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            backgroundColor:'#1A2332', borderColor:'rgba(96,184,255,.3)', borderWidth:1,
+            titleColor:'#8DC4F0', bodyColor:'#CDD6E0',
+            filter: i=>{ const ds=pvHistInst?.data?.datasets?.[i.datasetIndex]; return ds&&ds.label!=='__zero__'&&!isNaN(i.parsed.y); },
+            callbacks:{
+              title: items=>{const t=TIMES[items?.[0]?.dataIndex];const mk=TBE_MARKERS.find(x=>x.time===t);return mk?t+' · '+mk.label:t;},
+              label: c=>{ const ds=pvHistInst?.data?.datasets?.[c.datasetIndex]; if(!ds||ds.label==='__zero__') return null; return `${ds.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(2)}`; }
+            }
+          }
+        },
+        scales:{
+          x:{ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0},grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}},
+          y:{ticks:{color:'#7A7060',font:{size:10}},grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}}
+        }
+      }
+    });
+  } else {
+    pvHistInst.data.datasets = pvHistDatasets;
+    pvHistInst.update('none');
+  }
+
+  // ---- 3. ITIHAS chart — active lines + live compare ----
+  const activeArr = [...active];
+  const pvItihasLbl = document.getElementById('pv-itihas-label');
+  if(pvItihasLbl) pvItihasLbl.textContent = activeArr.length
+    ? activeArr.length + 'টি লাইন' + (showLiveCompare && liveCompareVals ? ' ⚡ লাইভ' : '')
+    : '— কোনো লাইন সিলেক্ট নেই —';
+
+  const pvLegend = document.getElementById('pv-itihas-legend');
+  if(pvLegend){
+    pvLegend.innerHTML = activeArr.slice(0,8).map(k=>
+      `<div class="leg"><span class="leg-line" style="background:${COLORS[k]};"></span><span style="color:${COLORS[k]};">${LABELS[k]}</span></div>`
+    ).join('') + (activeArr.length>8?`<div class="leg"><span style="color:var(--dim);">+${activeArr.length-8} আরো</span></div>`:'')
+    + (showLiveCompare && liveCompareVals ? `<div class="leg"><span class="leg-line" style="background:#fff;box-shadow:0 0 4px #fff;"></span><span>⚡ লাইভ</span></div>` : '');
+  }
+
+  const itihasDatasets = activeArr.map(k=>({
+    label: LABELS[k], data: D[k], borderColor: COLORS[k], backgroundColor:'transparent',
+    borderWidth: activeArr.length<=3?2:1.5, tension:.3, pointRadius:0, pointHoverRadius:4
+  }));
+  if(showLiveCompare && liveCompareVals) itihasDatasets.push(liveLine(liveCompareVals));
+  itihasDatasets.push({ label:'__zero__', data: new Array(73).fill(0), borderColor:'rgba(255,255,255,0.08)', borderWidth:1, pointRadius:0 });
+
+  if(!pvItihashInst){
+    const ctx = document.getElementById('pvItihashChart')?.getContext('2d');
+    if(ctx){
+      pvItihashInst = new Chart(ctx, {
+        type:'line', plugins:[chartBorderPlugin,pvMarkersPlugin],
+        data:{ labels:TIMES, datasets: itihasDatasets },
+        options:{
+          responsive:true, maintainAspectRatio:false, animation:false,
+          interaction:{ mode:'index', intersect:false },
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              backgroundColor:'#1A2332', borderColor:'rgba(255,255,255,.12)', borderWidth:1,
+              titleColor:'#C9A84C', bodyColor:'#E8E0D0',
+              filter: i => { const ds=pvItihashInst?.data?.datasets?.[i.datasetIndex]; return ds&&ds.label!=='__zero__'&&!isNaN(i.parsed.y); },
+              callbacks:{
+                title: items=>{ const t=TIMES[items?.[0]?.dataIndex]; const mk=TBE_MARKERS.find(x=>x.time===t); return mk?t+' · '+mk.label:t; },
+                label: c => { const ds=pvItihashInst?.data?.datasets?.[c.datasetIndex]; if(!ds||ds.label==='__zero__') return null; return `${ds.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(2)}`; }
+              }
+            }
+          },
+          scales:{
+            x:{ ticks:{color:'#7A7060',font:{size:9},maxTicksLimit:12,maxRotation:0}, grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'} },
+            y:{ ticks:{color:'#7A7060',font:{size:10}}, grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}, border:{dash:[3,3]} }
+          }
+        }
+      });
+    }
+  } else {
+    pvItihashInst.data.datasets = itihasDatasets;
+    pvItihashInst.update('none');
+  }
+}
+// ====================== DAILY SAVE ======================
+function toggleManagePanel(){
+  const panel = document.getElementById('daily-manage-panel');
+  const open  = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  if(open){
+    // Close save panel if open
+    document.getElementById('daily-save-panel').style.display = 'none';
+    document.getElementById('save-panel-btn').style.background = 'rgba(61,214,140,.1)';
+    renderManageList();
+  }
+}
+
+function renderManageList(){
+  const list  = document.getElementById('manage-list');
+  const empty = document.getElementById('manage-empty');
+  list.innerHTML = '';
+
+  // Gather saved keys from localStorage
+  let savedKeys = {};
+  try { savedKeys = JSON.parse(localStorage.getItem('tbe_daily_saves') || '{}'); } catch(e){}
+
+  const keys = Object.keys(savedKeys);
+  if(!keys.length){ empty.style.display='block'; return; }
+  empty.style.display = 'none';
+
+  keys.forEach(key => {
+    const entry  = savedKeys[key];
+    const label  = entry.label || LABELS[key] || key;
+    const color  = entry.color || COLORS[key] || '#8DC4F0';
+    const restArr= entry.data  || D[key] || [];
+    const lastV  = [...restArr].reverse().find(v=>v!==0) ?? 0;
+
+    const row = document.createElement('div');
+    row.id = 'manage-row-' + key;
+    row.style.cssText = 'background:var(--bg3);border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:10px 12px;';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:${color};display:inline-block;flex-shrink:0;"></span>
+          <span style="font-size:12px;font-weight:700;color:${color};">${label}</span>
+          <span style="font-size:11px;font-family:monospace;color:${lastV>=0?'var(--green)':'var(--red)'};">${lastV>=0?'+':''}${lastV.toFixed(2)}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="editSavedEntry('${key}')" style="padding:4px 10px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:10px;cursor:pointer;border-radius:3px;font-family:inherit;">✏️ এডিট</button>
+          <button onclick="deleteSavedEntry('${key}')" style="padding:4px 10px;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.3);color:var(--red);font-size:10px;cursor:pointer;border-radius:3px;font-family:inherit;">🗑️ মুছুন</button>
+        </div>
+      </div>
+      <div id="edit-inline-${key}" style="display:none;margin-top:10px;border-top:1px solid rgba(255,255,255,0.07);padding-top:10px;"></div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function editSavedEntry(key){
+  const inlineDiv = document.getElementById('edit-inline-' + key);
+  if(!inlineDiv) return;
+
+  // Toggle
+  if(inlineDiv.style.display !== 'none'){
+    inlineDiv.style.display = 'none';
+    return;
+  }
+
+  let savedKeys = {};
+  try { savedKeys = JSON.parse(localStorage.getItem('tbe_daily_saves') || '{}'); } catch(e){}
+  const entry = savedKeys[key];
+  if(!entry) return;
+
+  const restArr = entry.data || [];
+
+  // Build inline editor — show all 73 rest values
+  inlineDiv.innerHTML = `
+    <div style="font-size:10px;color:var(--dim);margin-bottom:8px;">✏️ Rest মান সংশোধন করুন — পরিবর্তন করে আপডেট চাপুন</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:260px;overflow-y:auto;margin-bottom:10px;" id="edit-grid-${key}">
+      ${restArr.map((v,i)=>`
+        <div style="display:flex;align-items:center;gap:3px;">
+          <span style="font-size:9px;color:var(--dim);width:22px;flex-shrink:0;">${TIMES[i]||i}</span>
+          <input type="number" step="0.01" value="${v}" id="edit-cell-${key}-${i}"
+            style="width:100%;padding:2px 4px;background:var(--bg2);border:1px solid rgba(255,255,255,0.1);color:${v>=0?'var(--green)':'var(--red)'};border-radius:3px;font-size:10px;font-family:monospace;text-align:right;"
+            oninput="this.style.color=parseFloat(this.value)>=0?'var(--green)':'var(--red)'">
+        </div>
+      `).join('')}
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="updateSavedEntry('${key}')" style="padding:5px 14px;background:rgba(61,214,140,.15);border:1px solid rgba(61,214,140,.4);color:var(--green);font-size:11px;cursor:pointer;border-radius:3px;font-family:inherit;">✅ আপডেট ও সেভ</button>
+      <button onclick="document.getElementById('edit-inline-${key}').style.display='none'" style="padding:5px 10px;background:none;border:1px solid rgba(255,255,255,0.1);color:var(--dim);font-size:11px;cursor:pointer;border-radius:3px;font-family:inherit;">বাতিল</button>
+    </div>
+  `;
+  inlineDiv.style.display = 'block';
+}
+
+function updateSavedEntry(key){
+  const newRest = [];
+  for(let i=0;i<73;i++){
+    const inp = document.getElementById(`edit-cell-${key}-${i}`);
+    newRest.push(inp ? parseFloat(inp.value)||0 : 0);
+  }
+
+  // Update D[]
+  D[key] = newRest;
+
+  // Update localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem('tbe_daily_saves') || '{}');
+    if(saved[key]) saved[key].data = newRest;
+    localStorage.setItem('tbe_daily_saves', JSON.stringify(saved));
+  } catch(e){}
+
+  // Update cloud
+  supaSave(key, newRest, null, null, key);
+
+  updateHist();
+  document.getElementById('edit-inline-' + key).style.display = 'none';
+  renderManageList();
+  showToast(`✅ "${LABELS[key]||key}" আপডেট হয়েছে`);
+}
+
+function deleteSavedEntry(key){
+  if(!confirm(`"${LABELS[key]||key}" মুছে ফেলবেন?`)) return;
+
+  // Remove from localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem('tbe_daily_saves') || '{}');
+    delete saved[key];
+    localStorage.setItem('tbe_daily_saves', JSON.stringify(saved));
+  } catch(e){}
+
+  // Remove from D[], LABELS, COLORS, ALL_KEYS, active
+  D[key] = new Array(73).fill(0);
+  delete LABELS[key];
+  delete COLORS[key];
+  const idx = ALL_KEYS.indexOf(key);
+  if(idx>-1) ALL_KEYS.splice(idx,1);
+  active.delete(key);
+
+  // Remove from cloud
+  supaDelete(key);
+
+  updateHist();
+  renderManageList();
+  showToast(`🗑️ "${key}" মুছে ফেলা হয়েছে`);
+}
+
+function toggleSavePanel(){
+  const panel = document.getElementById('daily-save-panel');
+  const btn   = document.getElementById('save-panel-btn');
+  const open  = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  btn.style.background = open ? 'rgba(61,214,140,.2)' : 'rgba(61,214,140,.1)';
+  if(open) document.getElementById('sv-status').textContent = '';
+}
+
+function saveDailyData(){
+  const month = hlGetVals('sv-months')[0] || '';
+  const week  = hlGetVals('sv-weeks')[0]  || '';
+  const day   = hlGetVals('sv-days')[0]   || '';
+  const status = document.getElementById('sv-status');
+
+  if(!month || !week || !day){
+    status.innerHTML = '<span style="color:var(--red);">⚠ মাস, সপ্তাহ ও দিন সিলেক্ট করুন</span>';
+    return;
+  }
+
+  const restVals = [];
+  for(let i=0;i<73;i++){
+    const cell = document.getElementById('rest-'+i);
+    const raw  = cell ? parseFloat(cell.textContent.replace('+','')) : 0;
+    restVals.push(isNaN(raw) ? 0 : raw);
+  }
+
+  if(restVals.every(v=>v===0)){
+    status.innerHTML = '<span style="color:var(--red);">⚠ কোনো ডাটা নেই — আগে ইনপুট দিন</span>';
+    return;
+  }
+
+  const key   = month === 'Feb' ? `${day}_${week}` : `${month}_${day}_${week}`;
+  const dayBn = {Mon:'সোম',Tue:'মঙ্গল',Wed:'বুধ',Thu:'বৃহ',Fri:'শুক্র'};
+  const label = month === 'Feb' ? `${dayBn[day]} ${week}` : `${month} ${dayBn[day]} ${week}`;
+
+  D[key] = restVals;
+  LABELS[key] = label;
+  if(!COLORS[key]) COLORS[key] = _genColor(key);
+  if(!ALL_KEYS.includes(key)) ALL_KEYS.push(key);
+
+  // Save to localStorage (same computer)
+  try {
+    const saved = JSON.parse(localStorage.getItem('tbe_daily_saves') || '{}');
+    saved[key] = { data: restVals, label, color: COLORS[key] };
+    localStorage.setItem('tbe_daily_saves', JSON.stringify(saved));
+  } catch(e){}
+
+  // Save to Supabase cloud (cross-device sync)
+  status.innerHTML = `<span style="color:var(--green);">✓ "${label}" সেভ হয়েছে · ☁ Cloud এ আপলোড হচ্ছে...</span>`;
+  supaSave(key, restVals, null, null, key).then(()=>{
+    status.innerHTML = `<span style="color:var(--green);">✓ "${label}" সেভ হয়েছে · ☁ Cloud sync সম্পন্ন — বাড়ি ও অফিস দুই জায়গাতেই পাবেন</span>`;
+  }).catch(()=>{
+    status.innerHTML = `<span style="color:var(--gold);">✓ "${label}" locally সেভ হয়েছে · ⚠ Cloud sync ব্যর্থ (Internet চেক করুন)</span>`;
+  });
+
+  updateHist();
+}
+
+function _genColor(key){
+  const hue = [...key].reduce((h,c)=>h+c.charCodeAt(0),0) % 360;
+  return `hsl(${hue},70%,65%)`;
+}
+
+function _restoreSavedData(){
+  try {
+    const saved = JSON.parse(localStorage.getItem('tbe_daily_saves') || '{}');
+    Object.entries(saved).forEach(([key,{data,label,color}])=>{
+      D[key] = data;
+      LABELS[key] = label;
+      COLORS[key] = color || _genColor(key);
+      if(!ALL_KEYS.includes(key)) ALL_KEYS.push(key);
+    });
+  } catch(e){}
+}
+
 function sessVal(key,sessEnd){return D[key][sessEnd];}
 
 function calcCorr(){
@@ -1533,6 +2131,7 @@ function switchTab(t){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   event.target.classList.add('active');
   document.getElementById(`tab-${t}`).classList.add('active');
+  if(t==='preview') setTimeout(syncPreviewCharts, 50);
 }
 
 const HIST_DATES_MAP = {
@@ -1558,16 +2157,11 @@ const HIST_DATES_MAP = {
   '2026-05-15':'May_Thu_W3','2026-05-16':'May_Fri_W3',
 };
 // ====================== INIT ======================
-buildSessTable();
+_restoreSavedData();
 buildLiveTable();
 loadSavedLiveDates();
 updateHist();
 renderSavedDaysPanel();
-// Initialize empty Historical Load chart after page load so tab shows an empty preview
-(function(){
-  const init = ()=>{ try{ updateHistLoadChart(new Array(73).fill(NaN)); }catch(e){ console.warn('hist init failed', e); } };
-  if(document.readyState === 'complete') init(); else window.addEventListener('load', init);
-})();
 // Auto-load from Supabase cloud on startup
 setTimeout(supaLoadAll, 800);
 
@@ -1949,26 +2543,23 @@ function filterUpdate() { filterPreview(); }
 // ====================== DRAWING TOOLS ======================
 let drawTool   = 'none';
 let drawings   = []; // [{type,x1,y1,x2,y2,color,width,text,selected}]
-let histDrawings = [];
 // Value-based save: converts pixel→value for persistence
 const DRAW_STORE_KEY = 'tbe_drawings';
-const DRAW_STORE_KEY_HIST = 'tbe_drawings_hist';
 
-function pxToVal(px, py, chart = liveChart) {
-  if(!chart) return {px, py};
-  const xScale = chart.scales.x;
-  const yScale = chart.scales.y;
+function pxToVal(px, py) {
+  if(!liveChart) return {px, py};
+  const xScale = liveChart.scales.x;
+  const yScale = liveChart.scales.y;
   const xIdx = xScale ? Math.round(xScale.getValueForPixel(px/devicePixelRatio)) : 0;
   const yVal = yScale ? yScale.getValueForPixel(py/devicePixelRatio) : 0;
   return {xi: Math.max(0,Math.min(72,xIdx)), yv: parseFloat(yVal.toFixed(4))};
 }
 
-function valToPx(xi, yv, chart = liveChart) {
-  if(!chart) return {x:0, y:0};
-  const xScale = chart.scales.x;
-  const yScale = chart.scales.y;
-  // find a representative canvas element to compute dpr
-  const cv = document.getElementById(chart.canvas?.id || 'drawCanvas') || document.getElementById('drawCanvas');
+function valToPx(xi, yv) {
+  if(!liveChart) return {x:0, y:0};
+  const xScale = liveChart.scales.x;
+  const yScale = liveChart.scales.y;
+  const cv = document.getElementById('drawCanvas');
   const dpr = cv ? devicePixelRatio : 1;
   return {
     x: (xScale ? xScale.getPixelForValue(xi) : 0) * dpr,
@@ -1976,68 +2567,51 @@ function valToPx(xi, yv, chart = liveChart) {
   };
 }
 
-function _serializeDrawings(arr, chart) {
-  return arr.map(d => {
+function saveDrawings() {
+  // Convert each drawing's pixel coords to chart values
+  const toSave = drawings.map(d => {
     if(d.type === 'text') {
-      const v1 = pxToVal(d.x1, d.y1, chart);
+      const v1 = pxToVal(d.x1, d.y1);
       return {...d, _xi1:v1.xi, _yv1:v1.yv, x1:undefined, y1:undefined, selected:false};
     }
     if(d.type === 'hline') {
-      const v1 = pxToVal(0, d.y1, chart);
+      const v1 = pxToVal(0, d.y1);
       return {...d, _yv1:v1.yv, x1:undefined, y1:undefined, selected:false};
     }
-    const v1 = pxToVal(d.x1, d.y1, chart);
-    const v2 = pxToVal(d.x2, d.y2, chart);
+    const v1 = pxToVal(d.x1, d.y1);
+    const v2 = pxToVal(d.x2, d.y2);
     return {...d, _xi1:v1.xi, _yv1:v1.yv, _xi2:v2.xi, _yv2:v2.yv,
       x1:undefined, y1:undefined, x2:undefined, y2:undefined, selected:false};
   });
+  try { localStorage.setItem(DRAW_STORE_KEY, JSON.stringify(toSave)); } catch(e){}
 }
 
-function saveCurrentDrawings() {
+function loadDrawings() {
   try {
-    if(liveMode === 'load') {
-      const toSave = _serializeDrawings(histDrawings, histLoadChart || liveChart);
-      localStorage.setItem(DRAW_STORE_KEY_HIST, JSON.stringify(toSave));
-    } else {
-      const toSave = _serializeDrawings(drawings, liveChart);
-      localStorage.setItem(DRAW_STORE_KEY, JSON.stringify(toSave));
-    }
-  } catch(e){}
-}
-
-function _deserializeToArray(raw, chart) {
-  const saved = JSON.parse(raw || '[]');
-  return saved.map(d => {
-    if(d.type === 'hline') {
-      const p1 = valToPx(0, d._yv1, chart);
-      return {...d, y1: p1.y, x1:0};
-    }
-    if(d.type === 'text') {
-      const p1 = valToPx(d._xi1||0, d._yv1||0, chart);
-      return {...d, x1:p1.x, y1:p1.y};
-    }
-    const p1 = valToPx(d._xi1||0, d._yv1||0, chart);
-    const p2 = valToPx(d._xi2||0, d._yv2||0, chart);
-    return {...d, x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y};
-  });
-}
-
-function loadCurrentDrawings() {
-  try {
-    const rawLive = localStorage.getItem(DRAW_STORE_KEY);
-    drawings = rawLive ? _deserializeToArray(rawLive, liveChart) : [];
-  } catch(e){ drawings = []; }
-  try {
-    const rawHist = localStorage.getItem(DRAW_STORE_KEY_HIST);
-    histDrawings = rawHist ? _deserializeToArray(rawHist, histLoadChart || liveChart) : [];
-  } catch(e){ histDrawings = []; }
-  redrawAll();
+    const raw = localStorage.getItem(DRAW_STORE_KEY);
+    if(!raw) return;
+    const saved = JSON.parse(raw);
+    drawings = saved.map(d => {
+      if(d.type === 'hline') {
+        const p1 = valToPx(0, d._yv1);
+        return {...d, y1: p1.y, x1:0};
+      }
+      if(d.type === 'text') {
+        const p1 = valToPx(d._xi1||0, d._yv1||0);
+        return {...d, x1:p1.x, y1:p1.y};
+      }
+      const p1 = valToPx(d._xi1||0, d._yv1||0);
+      const p2 = valToPx(d._xi2||0, d._yv2||0);
+      return {...d, x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y};
+    });
+    redrawAll();
+  } catch(e) { drawings = []; }
 }
 let drawStart  = null;
 let isDrawing  = false;
 
 // --- Move/drag state ---
-let moveTarget  = null;  // index in active drawings[]
+let moveTarget  = null;  // index in drawings[]
 let moveHandle  = null;  // 'body' | 'p1' | 'p2'
 let moveLast    = null;  // last mouse pos during drag
 let isMoving    = false;
@@ -2047,25 +2621,16 @@ function setTool(tool, btn) {
   drawTool = tool;
   document.querySelectorAll('.dtool').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  const cv = (liveMode === 'load') ? document.getElementById('histDrawCanvas') : document.getElementById('drawCanvas');
-  if (cv) cv.style.cursor = tool === 'none' ? 'default' : 'crosshair';
+  const cv = document.getElementById('drawCanvas');
+  if (!cv) return;
+  cv.style.cursor = tool === 'none' ? 'default' : 'crosshair';
   // deselect all when switching tool
-  const arr = (liveMode === 'load') ? histDrawings : drawings;
-  arr.forEach(d => d.selected = false);
+  drawings.forEach(d => d.selected = false);
   redrawAll();
 }
 
-function getColor() {
-  return (liveMode === 'load'
-    ? document.getElementById('hist-draw-color')?.value
-    : document.getElementById('draw-color')?.value) || '#E8C97A';
-}
-function getWidth() {
-  const val = (liveMode === 'load'
-    ? document.getElementById('hist-draw-width')?.value
-    : document.getElementById('draw-width')?.value) || 2;
-  return parseInt(val) * devicePixelRatio;
-}
+function getColor() { return document.getElementById('draw-color')?.value || '#E8C97A'; }
+function getWidth() { return parseInt(document.getElementById('draw-width')?.value || 2) * devicePixelRatio; }
 function getPos(e, cv) {
   const r = cv.getBoundingClientRect();
   return { x: (e.clientX - r.left) * devicePixelRatio,
@@ -2085,13 +2650,12 @@ function distPtLine(px, py, x1, y1, x2, y2) {
   return Math.hypot(px - (x1+t*dx), py - (y1+t*dy));
 }
 
-function hitTest(pos, arr=null) {
+function hitTest(pos) {
   // returns {idx, handle:'body'|'p1'|'p2'} or null
   // iterate in reverse so topmost drawing wins
-  const list = arr || (liveMode === 'load' ? histDrawings : drawings);
   const r = HIT_R * devicePixelRatio;
-  for (let i = list.length - 1; i >= 0; i--) {
-    const d = list[i];
+  for (let i = drawings.length - 1; i >= 0; i--) {
+    const d = drawings[i];
     if (d.type === 'text') {
       if (Math.hypot(pos.x - d.x1, pos.y - d.y1) < r * 3) return {idx:i, handle:'body'};
       continue;
@@ -2116,12 +2680,14 @@ function hitTest(pos, arr=null) {
   }
   return null;
 }
-function attachDrawHandlers(cv, arr, wrapId) {
+
+function initDrawCanvas() {
+  const cv = document.getElementById('drawCanvas');
   if (!cv || cv._drawInited) return;
   cv._drawInited = true;
 
   function syncSize() {
-    const wrap = document.getElementById(wrapId);
+    const wrap = document.getElementById('live-chart-wrap');
     if (!wrap) return;
     const r = wrap.getBoundingClientRect();
     cv.width  = r.width  * devicePixelRatio;
@@ -2139,9 +2705,9 @@ function attachDrawHandlers(cv, arr, wrapId) {
 
     // MOVE tool — pick up a drawing
     if (drawTool === 'none') {
-      const hit = hitTest(pos, arr);
+      const hit = hitTest(pos);
       if (hit) {
-        arr.forEach((d,i) => d.selected = i === hit.idx);
+        drawings.forEach((d,i) => d.selected = i === hit.idx);
         moveTarget = hit.idx;
         moveHandle = hit.handle;
         moveLast   = pos;
@@ -2149,7 +2715,7 @@ function attachDrawHandlers(cv, arr, wrapId) {
         cv.style.cursor = moveHandle === 'body' ? 'move' : 'crosshair';
         redrawAll();
       } else {
-        arr.forEach(d => d.selected = false);
+        drawings.forEach(d => d.selected = false);
         redrawAll();
       }
       return;
@@ -2159,7 +2725,7 @@ function attachDrawHandlers(cv, arr, wrapId) {
     if (drawTool === 'text') {
       const txt = prompt('লেবেল লিখুন:');
       if (txt) {
-        arr.push({type:'text', x1:pos.x, y1:pos.y,
+        drawings.push({type:'text', x1:pos.x, y1:pos.y,
           text:txt, color:getColor(), width:getWidth()});
         redrawAll();
       }
@@ -2179,7 +2745,7 @@ function attachDrawHandlers(cv, arr, wrapId) {
     if (isMoving && moveTarget !== null && moveLast) {
       const dx = pos.x - moveLast.x;
       const dy = pos.y - moveLast.y;
-      const d  = arr[moveTarget];
+      const d  = drawings[moveTarget];
       if (moveHandle === 'body') {
         d.x1 += dx; d.y1 += dy;
         if (d.x2 !== undefined) { d.x2 += dx; d.y2 += dy; }
@@ -2195,7 +2761,7 @@ function attachDrawHandlers(cv, arr, wrapId) {
 
     // Hover cursor in move mode
     if (drawTool === 'none' && !isMoving) {
-      const hit = hitTest(pos, arr);
+      const hit = hitTest(pos);
       cv.style.cursor = hit
         ? (hit.handle === 'body' ? 'move' : 'crosshair')
         : 'default';
@@ -2218,7 +2784,7 @@ function attachDrawHandlers(cv, arr, wrapId) {
     if (isMoving) {
       isMoving = false; moveTarget = null; moveHandle = null; moveLast = null;
       cv.style.cursor = 'default';
-      saveCurrentDrawings(); // persist after drag
+      saveDrawings(); // persist after drag
       return;
     }
     if (!isDrawing || !drawStart) return;
@@ -2226,19 +2792,19 @@ function attachDrawHandlers(cv, arr, wrapId) {
     isDrawing = false;
     const dist = Math.hypot(pos.x - drawStart.x, pos.y - drawStart.y);
     if (dist > 5) {
-      arr.push({type:drawTool, x1:drawStart.x, y1:drawStart.y,
+      drawings.push({type:drawTool, x1:drawStart.x, y1:drawStart.y,
         x2:pos.x, y2:pos.y, color:getColor(), width:getWidth()});
     }
     drawStart = null;
     redrawAll();
-    saveCurrentDrawings(); // persist to localStorage
+    saveDrawings(); // persist to localStorage
   });
 
-  // Delete key removes selected drawing (operates on focused/active array)
+  // Delete key removes selected drawing
   document.addEventListener('keydown', e => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
-      const idx = arr.findIndex(d => d.selected);
-      if (idx >= 0) { arr.splice(idx, 1); redrawAll(); }
+      const idx = drawings.findIndex(d => d.selected);
+      if (idx >= 0) { drawings.splice(idx, 1); redrawAll(); }
     }
   });
 
@@ -2250,26 +2816,16 @@ function attachDrawHandlers(cv, arr, wrapId) {
 
 // ---- redraw ----
 function redrawAll() {
-  // Live drawings
   const cv = document.getElementById('drawCanvas');
-  if (cv) {
-    const ctx2 = cv.getContext('2d');
-    ctx2.clearRect(0, 0, cv.width, cv.height);
-    drawings.forEach(d => drawShape(ctx2, d, cv));
-  }
-  // Hist drawings
-  const hcv = document.getElementById('histDrawCanvas');
-  if (hcv) {
-    const hctx = hcv.getContext('2d');
-    hctx.clearRect(0, 0, hcv.width, hcv.height);
-    histDrawings.forEach(d => drawShape(hctx, d, hcv));
-  }
+  if (!cv) return;
+  const ctx2 = cv.getContext('2d');
+  ctx2.clearRect(0, 0, cv.width, cv.height);
+  drawings.forEach(d => drawShape(ctx2, d, cv));
 }
 
 function drawShape(ctx2, d, cv) {
   const W = cv.width, H = cv.height;
   const sel = d.selected;
-  const chartRef = (cv.id === 'histDrawCanvas') ? (histLoadChart || liveChart) : liveChart;
   ctx2.save();
   ctx2.strokeStyle = d.color || '#E8C97A';
   ctx2.fillStyle   = d.color || '#E8C97A';
@@ -2280,8 +2836,8 @@ function drawShape(ctx2, d, cv) {
   switch(d.type) {
     case 'hline':
       ctx2.beginPath(); ctx2.moveTo(0, d.y1); ctx2.lineTo(W, d.y1); ctx2.stroke();
-      if (chartRef) {
-        const val = chartRef.scales.y?.getValueForPixel(d.y1 / devicePixelRatio);
+      if (liveChart) {
+        const val = liveChart.scales.y?.getValueForPixel(d.y1 / devicePixelRatio);
         if (val != null) {
           ctx2.shadowBlur = 0;
           ctx2.font = `bold ${11*devicePixelRatio}px monospace`;
@@ -2430,56 +2986,6 @@ function copyChartLink() {
   });
 }
 
-// Historical helpers (operate on histLoadChart canvas)
-async function copyHistChartImage(){
-  const cv = document.getElementById('histLoadChart');
-  if(!cv) return;
-  const tmp = document.createElement('canvas');
-  tmp.width = cv.width || cv.getAttribute('width') || 800;
-  tmp.height = cv.height || cv.getAttribute('height') || 300;
-  const tc = tmp.getContext('2d');
-  tc.fillStyle = '#0D1117'; tc.fillRect(0,0,tmp.width,tmp.height);
-  tc.drawImage(cv,0,0);
-  const dv = document.getElementById('histDrawCanvas');
-  if(dv) tc.drawImage(dv,0,0);
-  try{ tmp.toBlob(async blob=>{ await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); showToast('✓ Image copied!'); }); }
-  catch(e){ const a=document.createElement('a'); a.href=tmp.toDataURL('image/png'); a.download='TBE_hist_'+new Date().toISOString().slice(0,10)+'.png'; a.click(); showToast('✓ Image downloaded!'); }
-}
-
-function copyHistChartLink(){
-  // No invest/return inputs for historical preview — create link to page with hash indicating selected historical key
-  const month = document.getElementById('ll-month')?.value || '';
-  const week  = document.getElementById('ll-week')?.value  || '';
-  const day   = document.getElementById('ll-day')?.value   || '';
-  if(!month||!week||!day){ showToast('⚠ সিলেক্ট করুন'); return; }
-  const key = month === 'Feb' ? `${day}_${week}` : `${month}_${day}_${week}`;
-  const url = location.href.split('#')[0] + '#h=' + encodeURIComponent(key);
-  navigator.clipboard.writeText(url).then(()=>showToast('✓ Link copied!')).catch(()=>prompt('Copy link:', url));
-}
-
-let isHistFullscreen = false; let histFsOrigParent=null; let histFsOrigNext=null;
-function toggleHistFullscreen(){
-  const wrap = document.getElementById('hist-chart-wrap');
-  const toolbar = document.getElementById('hist-draw-toolbar');
-  const btn = document.getElementById('hist-fs-btn');
-  if(!wrap) return;
-  if(!isHistFullscreen){
-    histFsOrigParent = wrap.parentElement; histFsOrigNext = wrap.nextSibling;
-    const fsDiv = document.createElement('div'); fsDiv.id='hist-chart-fullscreen'; fsDiv.style.cssText='position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;padding:10px;';
-    if(toolbar) fsDiv.appendChild(toolbar.cloneNode(true));
-    fsDiv.appendChild(wrap);
-    document.body.appendChild(fsDiv);
-    // rebind tool buttons inside fullscreen copy (best-effort)
-    fsDiv.querySelectorAll('.dtool[data-tool]').forEach(b=>{ b.onclick = ()=>setTool(b.dataset.tool, b); });
-    isHistFullscreen=true; if(btn) btn.textContent='✕ Exit';
-    setTimeout(()=>{ if(histLoadChart) histLoadChart.resize(); },50);
-  } else {
-    const fsDiv = document.getElementById('hist-chart-fullscreen');
-    if(fsDiv){ if(histFsOrigNext) histFsOrigParent.insertBefore(wrap, histFsOrigNext); else histFsOrigParent.appendChild(wrap); fsDiv.remove(); }
-    isHistFullscreen=false; if(btn) btn.textContent='⛶ Full'; setTimeout(()=>{ if(histLoadChart) histLoadChart.resize(); },50);
-  }
-}
-
 function loadFromHash() {
   const h = location.hash;
   if (!h.startsWith('#d=')) return;
@@ -2525,7 +3031,7 @@ function toggleFullscreen() {
     });
     isFullscreen = true;
     if(btn) btn.textContent = '✕ Exit';
-    setTimeout(()=>{ if(liveChart) liveChart.resize(); initDrawCanvases(); }, 50);
+    setTimeout(()=>{ if(liveChart) liveChart.resize(); initDrawCanvas(); }, 50);
   } else {
     // Exit fullscreen
     const fsDiv = document.getElementById('live-chart-fullscreen');
@@ -2570,46 +3076,19 @@ function clearImportForm(){
   if(log){log.innerHTML='';log.style.display='none';}
 }
 
-function undoDrawing() { const arr = (liveMode === 'load') ? histDrawings : drawings; arr.pop(); redrawAll(); saveCurrentDrawings(); }
+function undoDrawing() { drawings.pop(); redrawAll(); saveDrawings(); }
 
 function clearDrawings() {
-  const arr = (liveMode === 'load') ? histDrawings : drawings;
-  if (arr.length && !confirm('সব drawing মুছে দেবেন?')) return;
-  arr.length = 0; redrawAll(); saveCurrentDrawings();
-}
-
-function initDrawCanvases(){
-  // ensure live draw canvas exists
-  let cv = document.getElementById('drawCanvas');
-  const liveWrap = document.getElementById('live-chart-wrap');
-  if(liveWrap && !cv){
-    cv = document.createElement('canvas');
-    cv.id = 'drawCanvas';
-    cv.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;pointer-events:auto;';
-    liveWrap.appendChild(cv);
-  }
-  // ensure hist draw canvas exists
-  let hcv = document.getElementById('histDrawCanvas');
-  const histWrap = document.getElementById('hist-chart-wrap');
-  if(histWrap && !hcv){
-    hcv = document.createElement('canvas');
-    hcv.id = 'histDrawCanvas';
-    hcv.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;pointer-events:auto;';
-    histWrap.appendChild(hcv);
-  }
-  // attach handlers
-  if(cv) attachDrawHandlers(cv, drawings, 'live-chart-wrap');
-  if(hcv) attachDrawHandlers(hcv, histDrawings, 'hist-chart-wrap');
+  if (drawings.length && !confirm('সব drawing মুছে দেবেন?')) return;
+  drawings=[]; redrawAll(); saveDrawings();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('draw-color')?.addEventListener('input', e => {});
   document.getElementById('draw-width')?.addEventListener('change', e => {});
   document.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => setTimeout(initDrawCanvases, 150));
+    t.addEventListener('click', () => setTimeout(initDrawCanvas, 150));
   });
-  // initialize canvases and load drawings shortly after DOM ready
-  setTimeout(()=>{ initDrawCanvases(); setTimeout(loadCurrentDrawings,200); }, 120);
 });
 
 
@@ -2882,7 +3361,7 @@ new Chart(document.getElementById('c'),{
   type:'line',plugins:[markerPlugin],
   data:{labels:times,datasets:[
     {data:data,borderColor:'${color}',
-     segment:{borderColor:c=>{const v=data[c.p1DataIndex];return v===undefined||isNaN(v)?'${color}':v>=0?'#3DD68C':'#E05C5C';}},
+     segment:{borderColor:c=>{const v=data[c?.p1DataIndex];return v===undefined||isNaN(v)?'${color}':v>=0?'#3DD68C':'#E05C5C';}},
      backgroundColor:'rgba(201,168,76,.06)',fill:'origin',
      borderWidth:2.5,tension:.35,pointRadius:0,pointHoverRadius:5,spanGaps:true},
     {data:new Array(73).fill(0),borderColor:'rgba(255,255,255,.1)',borderWidth:1,pointRadius:0}
@@ -2896,8 +3375,8 @@ new Chart(document.getElementById('c'),{
       callbacks:{label:c=>'Rest: '+(c.parsed.y>=0?'+':'')+c.parsed.y.toFixed(2)}
     }},
     scales:{
-      x:{ticks:{color:'#6B7A8D',font:{size:9},maxTicksLimit:14,maxRotation:0},grid:{color:'rgba(255,255,255,.03)'}},
-      y:{ticks:{color:'#6B7A8D'},grid:{color:'rgba(255,255,255,.05)'},border:{dash:[3,3]}}
+      x:{ticks:{color:'#6B7A8D',font:{size:9},maxTicksLimit:14,maxRotation:0},grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}},
+      y:{ticks:{color:'#6B7A8D'},grid:{display:false},border:{display:true,color:'rgba(255,255,255,0.15)'}}
     }
   }
 });
@@ -2916,101 +3395,75 @@ function setLiveMode(mode){
   const manBtn = document.getElementById('mode-manual-btn');
   const loadBtn = document.getElementById('mode-load-btn');
   const loadPanel = document.getElementById('live-load-panel');
-  const inputWrap = document.querySelector('.input-tbl-wrap');
-  const liveLayout = document.querySelector('.live-layout');
-  const liveChartBox = document.getElementById('liveChartBox');
 
   if(mode === 'load'){
-    if(loadBtn){ loadBtn.style.background = 'rgba(96,184,255,.18)'; loadBtn.style.color = '#8DC4F0'; }
-    if(manBtn){ manBtn.style.background = 'var(--bg3)'; manBtn.style.color = 'var(--dim)'; }
-    if(loadPanel) loadPanel.style.display = 'block';
-    if(inputWrap) inputWrap.style.display = 'none';
-    if(liveChartBox) liveChartBox.style.display = 'none';
-    if(liveLayout) liveLayout.style.gridTemplateColumns = '1fr';
+    loadBtn.style.background = 'rgba(96,184,255,.18)';
+    loadBtn.style.color = '#8DC4F0';
+    manBtn.style.background = 'var(--bg3)';
+    manBtn.style.color = 'var(--dim)';
+    loadPanel.style.display = 'block';
   } else {
-    if(manBtn){ manBtn.style.background = 'rgba(201,168,76,.18)'; manBtn.style.color = 'var(--gold)'; }
-    if(loadBtn){ loadBtn.style.background = 'var(--bg3)'; loadBtn.style.color = 'var(--dim)'; }
-    if(loadPanel) loadPanel.style.display = 'none';
-    if(inputWrap) inputWrap.style.display = 'block';
-    if(liveChartBox) liveChartBox.style.display = 'block';
-    if(liveLayout) liveLayout.style.gridTemplateColumns = '400px 1fr';
+    manBtn.style.background = 'rgba(201,168,76,.18)';
+    manBtn.style.color = 'var(--gold)';
+    loadBtn.style.background = 'var(--bg3)';
+    loadBtn.style.color = 'var(--dim)';
+    loadPanel.style.display = 'none';
   }
 }
 
-function updateLiveLoadWeeks(){
-  // Could filter weeks based on month if needed — for now all weeks available
-  updateLiveLoadDays();
-}
-
-function updateLiveLoadDays(){
-  const month = document.getElementById('ll-month')?.value || '';
-  const week  = document.getElementById('ll-week')?.value  || '';
-  const dayEl = document.getElementById('ll-day');
-  if(!dayEl) return;
-
-  // Filter available days based on what data exists
-  const days = ['Mon','Tue','Wed','Thu','Fri'];
-  const dayBn = {Mon:'সোমবার',Tue:'মঙ্গলবার',Wed:'বুধবার',Thu:'বৃহস্পতিবার',Fri:'শুক্রবার'};
-
-  dayEl.innerHTML = '<option value="">— সিলেক্ট করুন —</option>';
-  days.forEach(d => {
-    const key = month === 'Feb' ? `${d}_${week}` : `${month}_${d}_${week}`;
-    const hasData = D[key] && D[key].some(v=>v!==0);
-    if(!month || !week || hasData){
-      const opt = document.createElement('option');
-      opt.value = d;
-      opt.textContent = dayBn[d] + (hasData ? '' : ' (ডাটা নেই)');
-      opt.disabled = !hasData && !!(month && week);
-      dayEl.appendChild(opt);
-    }
-  });
-}
+function updateLiveLoadWeeks(){ /* no-op — chip UI needs no dynamic filtering */ }
+function updateLiveLoadDays(){ /* no-op — chip UI needs no dynamic filtering */ }
 
 function loadHistoricalToLive(){
-  const month = document.getElementById('ll-month')?.value || '';
-  const week  = document.getElementById('ll-week')?.value  || '';
-  const day   = document.getElementById('ll-day')?.value   || '';
-  const status= document.getElementById('ll-status');
+  const months = hlGetVals('hl-months');
+  const weeks  = hlGetVals('hl-weeks');
+  const days   = hlGetVals('hl-days');
+  const status = document.getElementById('ll-status');
 
-  if(!month || !week || !day){
+  if(!months.length || !weeks.length || !days.length){
     if(status) status.textContent = '⚠ মাস, সপ্তাহ ও দিন সিলেক্ট করুন';
     return;
   }
 
-  const key = month === 'Feb' ? `${day}_${week}` : `${month}_${day}_${week}`;
-  const restData = D[key];
+  const entries = [];
+  months.forEach(month => weeks.forEach(week => days.forEach(day => {
+    const key = month === 'Feb' ? `${day}_${week}` : `${month}_${day}_${week}`;
+    const restData = D[key];
+    if(restData && restData.some(v=>v!==0)){
+      entries.push({
+        key,
+        data: restData.map(v => v === 0 ? NaN : v),
+        label: LABELS[key] || key,
+        color: COLORS[key] || '#60B8FF'
+      });
+    }
+  })));
 
-  if(!restData || !restData.some(v=>v!==0)){
-    if(status) status.textContent = `⚠ "${key}" এর ডাটা পাওয়া যায়নি`;
+  if(!entries.length){
+    if(status) status.innerHTML = '<span style="color:var(--red);">⚠ সিলেক্ট করা কম্বিনেশনে কোনো ডাটা নেই</span>';
     return;
   }
 
-  // Keep manual input separate; only update historical preview chart.
-  const filled = restData.map(v => v===0 ? NaN : v);
-  updateHistLoadChart(restData);
-  updateNextCandleProb(restData, restData.reduce((last,v,i)=>v!==0?i:last,-1));
+  updateHistLoadChart(entries);
 
-  const lastVal = [...restData].reverse().find(v=>v!==0) || 0;
-  const lcEl = document.getElementById('live-current');
-  if(lcEl){ lcEl.textContent=(lastVal>=0?'+':'')+lastVal.toFixed(2); lcEl.style.color=lastVal>=0?'var(--green)':'var(--red)'; }
-
-  const label = LABELS[key] || key;
-  if(status){
-    status.innerHTML = `<span style="color:var(--green);">✓ "${label}" লোড হয়েছে — Final: ${restData[72]>=0?'+':''}${restData[72].toFixed(2)}</span>`;
+  const hlCurrentEl = document.getElementById('hl-current');
+  if(hlCurrentEl){
+    const lastVals = entries.map(e => e.data.filter(v=>!isNaN(v)).slice(-1)[0] ?? 0);
+    const avg = lastVals.reduce((a,b)=>a+b,0)/lastVals.length;
+    hlCurrentEl.textContent = (avg>=0?'+':'')+avg.toFixed(2);
+    hlCurrentEl.style.color = avg>=0?'var(--green)':'var(--red)';
   }
+
+  if(status) status.innerHTML = `<span style="color:var(--green);">✓ ${entries.length}টি দিন লোড হয়েছে: ${entries.map(e=>e.label).join(', ')}</span>`;
 }
 
 function clearLiveLoad(){
-  ['ll-month','ll-week','ll-day'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.value='';
+  ['hl-months','hl-weeks','hl-days'].forEach(id=>{
+    document.getElementById(id)?.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
   });
   const status=document.getElementById('ll-status');
   if(status) status.textContent='';
-  updateLiveLoadDays();
-  if(histLoadChart){
-    histLoadChart.data.datasets[0].data=new Array(73).fill(NaN);
-    histLoadChart.update('none');
-  }
+  clearHistLoadChart();
 }
 
 // ====================== SUPABASE SYNC ======================
@@ -3064,7 +3517,7 @@ async function supaSave(key, restArr, invArr, retArr, dateStr) {
 // Load all days from Supabase
 async function supaLoadAll() {
   try {
-    showToast('☁ Cloud থেকে লোড হচ্ছে...');
+    showToast('☁ Cloud থেকে ডাটা sync হচ্ছে...');
     const rows = await supaFetch('GET', null, '?select=*&order=date.asc');
     let loaded = 0;
     rows.forEach(row => {
@@ -3073,11 +3526,12 @@ async function supaLoadAll() {
       D[k] = row.rest;
       if(row.invest && row.invest.length===73) INV[k] = row.invest;
       if(row.ret    && row.ret.length===73)    RET[k] = row.ret;
-      if(!COLORS[k]) COLORS[k] = `hsl(${Math.random()*360|0},60%,65%)`;
+      if(!COLORS[k]) COLORS[k] = _genColor(k);
       if(!LABELS[k]) LABELS[k] = k.replace(/_/g,' ');
+      if(!ALL_KEYS.includes(k)) ALL_KEYS.push(k);
       loaded++;
     });
-    showToast(`☁ ${loaded}টি দিনের ডাটা লোড হয়েছে!`);
+    showToast(`☁ ${loaded}টি দিনের ডাটা sync হয়েছে — বাড়ি ও অফিস উভয় ডিভাইসে আপডেট`);
     updateHist();
     calcCorr();
     renderStoredList();
