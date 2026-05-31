@@ -1025,11 +1025,11 @@ const TBE_ZONES=[
 
 // Participant volume zones (based on Invest/Return value)
 const PART_ZONES=[
-  {min:5.1, max:5.5, color:'rgba(90,156,212,',  label:'Bank',        short:'Bank'},
-  {min:5.5, max:6, color:'rgba(61,214,140,',  label:'Hedge Fund',  short:'HF'},
-  {min:6, max:7, color:'rgba(201,168,76,',  label:'Options',     short:'Opt'},
-  {min:7, max:8, color:'rgba(240,120,80,',  label:'Institution', short:'Inst'},
-  {min:8, max:10,color:'rgba(224,92,92,',   label:'All Markets', short:'All'},
+  {min:5, max:5.99, color:'rgba(90,156,212,',  label:'Bank',        short:'Bank'},
+  {min:6, max:6.99, color:'rgba(61,214,140,',  label:'Hedge Fund',  short:'HF'},
+  {min:7, max:7.99, color:'rgba(201,168,76,',  label:'Options',     short:'Opt'},
+  {min:8, max:8.99, color:'rgba(240,120,80,',  label:'Institution', short:'Inst'},
+  {min:9, max:10,color:'rgba(224,92,92,',   label:'All Markets', short:'All'},
 ];
 function getPartZone(v){ return PART_ZONES.find(z=>v>=z.min&&v<z.max)||null; }
 let showPartZones=false;
